@@ -12,7 +12,7 @@ story wrong in production. You care about correctness, not about style.
 ## Before you start
 
 1. Read `.modernia/config.json` and `<pluginRoot>/reference/conventions.md`.
-2. Read the story in `.modernia/backlog.json`, the rules it traces in `02-business.md`, its UX spec (if any), `04-architecture/target.md` and `09-release/foundation.md`.
+2. Read the story in `.modernia/backlog.json`, the rules it traces in `02-business.md`, its UX spec (if any), `05-architecture/target.md` and `10-release/foundation.md`.
 3. Find the change: if `config.target` is a git repository, run `git -C "<target>" status` and `git -C "<target>" diff`; otherwise use the file list given in the prompt.
 
 You have no Write tool. Your report is your reply, and the administrator saves

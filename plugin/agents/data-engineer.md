@@ -43,10 +43,10 @@ Written in `config.language`, with these sections:
 
 When the administrator gives you a story whose owner is `data-engineer`:
 
-1. Read the story, the target data model (`04-architecture/target.md`, and the
+1. Read the story, the target data model (`05-architecture/target.md`, and the
    schema in `config.target` if the developer already created it) and
    `03-data.md`.
-2. Write the migration in `config.target`, where `09-release/foundation.md`
+2. Write the migration in `config.target`, where `10-release/foundation.md`
    places data scripts: the extract, the transformation (type mappings,
    encodings, code tables, cleansing of the quality risks found) and the load,
    and make it **idempotent** and re-runnable.

@@ -18,6 +18,7 @@ each release. You approve every important decision.
 | **Project Analyst** | Recognizes what the system is made of: technologies, components, integrations, size and technical debt. |
 | **Business Analyst** | Reconstructs capabilities, processes and business rules, and finds contradictions between documents and code. |
 | **Data Engineer** | Reconstructs the data model and the CRUD matrix, then builds and validates the data migration. |
+| **Estimator** | Before any design, estimates time, effort, team and cost as P50/P80 ranges with two independent methods. Refines the estimate once the architecture is chosen. |
 | **Architect** | Proposes 2 or 3 target options scored against explicit criteria, then documents your choice (ADR, target architecture, migration waves). |
 | **UX Designer** | Turns legacy screens into modern, accessible screen specifications. |
 | **QA Engineer** | Defines the golden cases that prove equivalence with the legacy system, and writes the failing tests before the code exists. |
@@ -32,21 +33,24 @@ each release. You approve every important decision.
 flowchart LR
   A[0 · Setup] --> B[1 · Intake]
   B -->|gate: sources| C[2 · Understanding]
-  C -->|gate: understanding| D[3 · Architecture]
-  D -->|gate: you choose the option| E[4 · Planning]
-  E -->|diagnosis complete| F[5 · Foundation]
-  F -->|gate: foundation| G[6 · Build by sprints]
+  C -->|gate: understanding| X[3 · Estimation]
+  X -->|gate: time, team and cost| D[4 · Architecture]
+  D -->|gate: you choose the option| E[5 · Planning]
+  E -->|diagnosis complete| F[6 · Foundation]
+  F -->|gate: foundation| G[7 · Build by sprints]
   G -->|gate: each sprint| G
-  G -->|wave complete| H[7 · Release]
+  G -->|wave complete| H[8 · Release]
   H -->|gate: release| G
 ```
+
+- **Estimate before design.** As soon as the system is understood, and before any architecture, the estimator tells you how long it will take, with how many people and at what cost, as ranges (P50 and P80) with its confidence level and every assumption visible. After you choose the architecture, the estimate is refined wave by wave and reconciled with the backlog.
 
 - **Any technology.** Nothing is hardcoded: VB6, COBOL, PowerBuilder, Delphi, Oracle Forms, classic ASP, .NET Framework, Java EE, PHP, Access… The project analyst discovers the stack instead of assuming it.
 - **Code, documents or both.** Without code, the agents reconstruct the system from manuals, specifications, minutes and screenshots (Word, Excel, PowerPoint, PDF, images, text) and say clearly what remains unknown. With both, they **cross-check** the sources and report each contradiction.
 - **No default stack.** The architect proposes options based on the business, the data and your constraints (cloud, team skills, time, licensing), and **you choose**.
 - **Evidence on every finding.** Each rule or fact cites where it comes from (a code line, a document section or your answer) or is marked as an assumption with its confidence level.
 - **Tests first, separate roles.** QA writes the tests, the developer makes them pass, and the reviewer and the security engineer check the result. No agent approves its own work.
-- **Stop whenever you want.** After phase 4 you have a complete diagnosis (an assessment, the target architecture and the backlog). Some projects need only that.
+- **Stop whenever you want.** After phase 3 you have an estimate, and after phase 5 a complete diagnosis (the assessment, the estimate, the target architecture and the backlog). Some projects need only that.
 
 ### How the agents communicate
 
@@ -58,10 +62,10 @@ traceable, and a future UI can show it live.
 
 ```
 .modernia/
-├── config.json · state.json · board.json · backlog.json · questions.json · events.jsonl
+├── config.json · state.json · board.json · backlog.json · estimate.json · questions.json · events.jsonl
 ├── sources/        documents converted to text, code metrics
-├── deliverables/   01-inventory · 02-business · 03-data · 04-architecture/ · 05-backlog
-│                   06-ux/ · 07-test-strategy · 08-security · 09-release/ · sprints/ · assessment
+├── deliverables/   01-inventory · 02-business · 03-data · 04-estimate · 05-architecture/ · 06-backlog
+│                   07-ux/ · 08-test-strategy · 09-security · 10-release/ · sprints/ · assessment
 └── reviews/        one review per story
 ```
 
@@ -111,6 +115,7 @@ explicit approval for each environment.
 ## Roadmap
 
 - [x] Diagnosis: inventory, business, data, architecture options, backlog and assessment
+- [x] Estimation of time, team and cost before the design, refined after the architecture
 - [x] Build: foundation, sprints, tests first, independent review, security
 - [x] Release by waves, with runbook and rollback
 - [ ] Web UI that shows the blackboard live (board, agents, decisions, questions)
@@ -123,7 +128,7 @@ explicit approval for each environment.
 .claude-plugin/marketplace.json
 plugin/
 ├── .claude-plugin/plugin.json
-├── agents/        the 11 specialists (one Markdown file each)
+├── agents/        the 12 specialists (one Markdown file each)
 ├── skills/        modernize (the administrator) and status
 ├── reference/     conventions shared by every agent
 └── scripts/       board.mjs (blackboard), ingest.mjs (documents), scan.mjs (code metrics)

@@ -1,6 +1,6 @@
 ---
 name: modernize
-description: Modernia administrator. Starts or continues the modernization of a software system with a team of specialist agents (scrum master, project analyst, business analyst, data engineer, architect, UX designer, QA, developer, reviewer, security and DevOps), working from source code, documents or both, in any technology. Runs diagnosis, architecture, planning, build by sprints and release by waves, with human approval gates. Use when the person wants to modernize, migrate, assess or analyze a legacy system, or says "continue", "next" or "go on" in a Modernia project. / Modernizar, migrar o analizar un sistema legado; continuar un proyecto Modernia.
+description: Modernia administrator. Starts or continues the modernization of a software system with a team of specialist agents (scrum master, project analyst, business analyst, data engineer, estimator, architect, UX designer, QA, developer, reviewer, security and DevOps), working from source code, documents or both, in any technology. Runs diagnosis, estimation (time, team and cost), architecture, planning, build by sprints and release by waves, with human approval gates. Use when the person wants to modernize, migrate, assess or analyze a legacy system, or says "continue", "next" or "go on" in a Modernia project. / Modernizar, migrar o analizar un sistema legado; continuar un proyecto Modernia.
 ---
 
 # Modernia · Administrator
@@ -29,11 +29,12 @@ For `foundation`, `build` and `release`, read `build.md`.
 | 0 · setup | administrator | — |
 | 1 · intake | scrum master, project analyst | `sources`: is this the right material? |
 | 2 · understanding | business analyst ∥ data engineer | `understanding`: is this what the system does? |
-| 3 · architecture | architect | `architecture`: which option? |
-| 4 · planning | scrum master, administrator | continue to build, or stop with the diagnosis |
-| 5 · foundation | devops → developer; QA ∥ security ∥ UX | `foundation`: approve the skeleton |
-| 6 · build | per story: UX → QA → developer → reviewer ∥ security | `sprint-n`: accept each sprint |
-| 7 · release | security ∥ devops | `release`: approve, and choose the environments |
+| 3 · estimation | estimator | `estimation`: time, team and cost, before any design |
+| 4 · architecture | architect | `architecture`: which option? |
+| 5 · planning | estimator (refine), scrum master, administrator | continue to build, or stop with the diagnosis |
+| 6 · foundation | devops → developer; QA ∥ security ∥ UX | `foundation`: approve the skeleton |
+| 7 · build | per story: UX → QA → developer → reviewer ∥ security | `sprint-n`: accept each sprint |
+| 8 · release | security ∥ devops | `release`: approve, and choose the environments |
 
 ---
 
@@ -97,17 +98,43 @@ it should be ignored by git (add `.modernia/` to `.gitignore`) or versioned.
    undocumented or lost functionality. Point to the deliverables for the
    details. Ask for approval or corrections.
    - Corrections → record them as answered questions (`BOARD q add --by administrator --text "<what was corrected>"` and then `BOARD q answer …`), re-dispatch, and ask again.
-   - Approved → `BOARD gate understanding approved`, then `BOARD phase architecture`.
+   - Approved → `BOARD gate understanding approved`, then `BOARD phase estimation`.
 
-## Phase 3 · architecture
+## Phase 3 · estimation
+
+The estimate comes **before** any architecture or design: the sponsor needs
+to know the order of magnitude in time, team and cost to decide whether and
+how to proceed, and the architect uses it as a driver.
+
+1. Dispatch `modernia:scrum-master` in mode `plan` for phase `estimation`.
+2. **Estimation context**: ask the human in one message, skipping anything
+   already answered. Every question is optional, and "I don't know" is fine
+   (the estimator then states an assumption):
+   - Is there a target date or a time window? Is it fixed or flexible?
+   - What team could work on it: how many people, which roles, what seniority, full or part time?
+   - Rates per role, with the currency, if they want the estimate in money. Without rates, the estimate is in hours.
+   - Working hours per day and the sprint length they use (the default is 2 weeks).
+   - Historical productivity from similar projects, if they have it.
+   Register each one as `BOARD q add --by administrator` and record the answer right away.
+3. Dispatch `modernia:estimator` in mode `initial`. Relay its blocking questions as in phase 2.
+4. **Gate `estimation`**: present the summary table (team scenarios ×
+   duration, effort and cost at P50 and P80), the confidence level and the
+   cone of uncertainty, the 3 assumptions with the biggest impact and the
+   answers that would narrow the range. Explain plainly that it will be
+   refined after the architecture decision. Ask for approval or for changes to
+   the assumptions.
+   - Changes → record them as answered questions, re-dispatch the estimator in mode `initial`, and ask again.
+   - Approved → `BOARD gate estimation approved --note "<chosen scenario, if any>"`, then `BOARD phase architecture`.
+
+## Phase 4 · architecture
 
 1. Dispatch `modernia:scrum-master` in mode `plan` for phase `architecture`.
 2. **Decision context**: before any option is drawn, ask the human the
    questions that drive the decision. Skip any that is already answered in
-   `questions.json` or clearly stated in the documents:
+   `questions.json` (the estimation context already covers time, team and
+   budget) or clearly stated in the documents:
    - Where must or can it run? (A specific cloud, on-premises, no preference.)
    - What does the team that will maintain it know? (Languages and platforms.)
-   - Time and budget pressure: when is the first part needed in production?
    - Licensing or compliance constraints (regulations, data residency, open source only…).
    - Which integrations or parts must stay as they are?
    - Expected users and volumes, if they are known.
@@ -122,28 +149,31 @@ it should be ignored by git (add `.modernia/` to `.gitignore`) or versioned.
    - Chosen → `BOARD gate architecture approved --note "OPT-n: <summary and adjustments>"`, then dispatch `modernia:architect` in mode `decision` with the choice and the adjustments.
 5. `BOARD phase planning`.
 
-## Phase 4 · planning
+## Phase 5 · planning
 
-1. Dispatch `modernia:scrum-master` in mode `plan` for phase `planning`, then
-   in mode `backlog`.
-2. Write `.modernia/deliverables/assessment.md` yourself, in `config.language`.
+1. Dispatch `modernia:scrum-master` in mode `plan` for phase `planning`.
+2. Dispatch `modernia:estimator` in mode `refine` (it adjusts the estimate to
+   the chosen architecture, wave by wave), then `modernia:scrum-master` in mode
+   `backlog` (it compares the story points with the refined estimate).
+3. Write `.modernia/deliverables/assessment.md` yourself, in `config.language`.
    It is the executive summary that a sponsor reads in 5 minutes:
    - the system today: what it does, its technology, size and main risks;
    - key findings: the most important rules, contradictions and lost or undocumented functionality;
+   - the estimate: time, team and cost (initial and refined), with the confidence level;
    - the decision: the chosen target and why, and the alternatives considered;
    - the roadmap: waves, the sprint plan and the size of the backlog, with the team assumption;
    - risks and open questions with their owners;
    - next steps.
    Link to the detailed deliverables instead of repeating them. Every number
    must come from a deliverable.
-3. Present the assessment to the human: the size of the backlog, the sprint
-   plan and the stories that are not ready. The diagnosis is a deliverable by
+4. Present the assessment to the human: the refined estimate, the size of the
+   backlog, the sprint plan and the stories that are not ready. The diagnosis is a deliverable by
    itself. Ask whether to **continue to the build stage** or stop here. Some
    projects need only the diagnosis.
    - Stop → `BOARD phase done`, log `done` and tell them that they can resume with `/modernia:modernize` at any time.
    - Continue → `BOARD phase foundation`, then follow `build.md`.
 
-## Phases 5 to 7 · foundation, build, release
+## Phases 6 to 8 · foundation, build, release
 
 Read `build.md` (next to this file) and follow it.
 

@@ -5,7 +5,7 @@ setup, the dispatching rules and the general rules of `SKILL.md` still apply.
 
 ---
 
-## Phase 5 · foundation
+## Phase 6 · foundation
 
 1. **Target repository**: ask the human where the modernized system should
    live. Suggest a sibling folder of the project named `<project>-modern`,
@@ -20,7 +20,7 @@ setup, the dispatching rules and the general rules of `SKILL.md` still apply.
    `strategy`, `modernia:security-engineer` in mode `threat-model` and, if the
    system has a UI, `modernia:ux-designer` in mode `guidelines`.
 5. Verify yourself: run the build and test commands from
-   `09-release/foundation.md` in the target. If they fail, send the output
+   `10-release/foundation.md` in the target. If they fail, send the output
    back to the owner (devops or developer) once.
 6. **Gate `foundation`**: show the human the structure, the commands, the
    pipeline, the environments with their approximate cost, the test strategy
@@ -31,7 +31,7 @@ setup, the dispatching rules and the general rules of `SKILL.md` still apply.
    and `BOARD phase build`, and commit the foundation in the target
    (`chore: foundation`).
 
-## Phase 6 · build (one sprint at a time)
+## Phase 7 · build (one sprint at a time)
 
 ### Sprint start
 
@@ -82,13 +82,13 @@ appears. Relay blocking questions immediately, one at a time.
    for acceptance of the sprint. Rejected stories go back to `todo` with the
    human's comments as notes, so that QA updates the tests first.
 3. Run `BOARD gate sprint-n approved`.
-4. If this sprint **completes a migration wave** (see `04-architecture/target.md`),
+4. If this sprint **completes a migration wave** (see `05-architecture/target.md`),
    offer to release it now (strangler releases happen per wave) → go to
-   **Phase 7**. Otherwise, start the next sprint.
+   **Phase 8**. Otherwise, start the next sprint.
 
-When there are no stories left, go to Phase 7 for the final release.
+When there are no stories left, go to Phase 8 for the final release.
 
-## Phase 7 · release (per wave)
+## Phase 8 · release (per wave)
 
 1. Run `BOARD phase release`. Dispatch `modernia:scrum-master` in mode `plan`
    for phase `release`.

@@ -13,7 +13,7 @@ line by line.
 ## Before you start
 
 1. Read `.modernia/config.json` and `<pluginRoot>/reference/conventions.md`. Follow the conventions strictly, especially the rules for the target repository.
-2. Read `04-architecture/target.md`, the ADRs and `09-release/foundation.md`.
+2. Read `05-architecture/target.md`, the ADRs and `10-release/foundation.md`.
 3. Log the start with `board.mjs log --agent developer --type start --msg "<mode / US-n>"`.
 
 The administrator calls you in one of three modes.
@@ -28,7 +28,7 @@ proves the stack works end to end. Use current LTS versions; check them
 against the real package registries when you have network access. Do not
 build business features yet.
 
-Add to `deliverables/09-release/foundation.md` (owned by devops; add only the
+Add to `deliverables/10-release/foundation.md` (owned by devops; add only the
 **Application** section): structure, where each kind of code goes, naming
 conventions (use the glossary in `02-business.md` for domain terms), and the
 build, run and test commands. Everything must build, and the empty test suite

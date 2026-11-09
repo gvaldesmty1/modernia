@@ -22,8 +22,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const PHASES = ['intake', 'understanding', 'architecture', 'planning', 'foundation', 'build', 'release', 'done'];
-const GATES = ['sources', 'understanding', 'architecture', 'foundation', 'release'];
+const PHASES = ['intake', 'understanding', 'estimation', 'architecture', 'planning', 'foundation', 'build', 'release', 'done'];
+const GATES = ['sources', 'understanding', 'estimation', 'architecture', 'foundation', 'release'];
 const STORY_STATUS = ['not-ready', 'todo', 'doing', 'testing', 'review', 'blocked', 'done'];
 const STEP_STATUS = ['todo', 'doing', 'done', 'blocked', 'skipped'];
 const TASK_STATUS = ['todo', 'doing', 'blocked', 'done'];
@@ -121,7 +121,7 @@ function init() {
   const pluginRoot = path.resolve(need(opt['plugin-root'], '--plugin-root'));
   const mode = code.length && docs.length ? 'both' : code.length ? 'code' : 'docs';
 
-  for (const dir of ['', 'sources', 'sources/text', 'deliverables', 'deliverables/04-architecture', 'deliverables/04-architecture/adr', 'deliverables/06-ux', 'deliverables/09-release', 'deliverables/sprints', 'reviews']) {
+  for (const dir of ['', 'sources', 'sources/text', 'deliverables', 'deliverables/05-architecture', 'deliverables/05-architecture/adr', 'deliverables/07-ux', 'deliverables/10-release', 'deliverables/sprints', 'reviews']) {
     fs.mkdirSync(file(dir), { recursive: true });
   }
   const createdAt = now();

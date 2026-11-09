@@ -19,6 +19,7 @@ importante.
 | **Analista de proyecto** | Reconoce de qué está hecho el sistema: tecnologías, componentes, integraciones, tamaño y deuda técnica. |
 | **Analista de negocio** | Reconstruye capacidades, procesos y reglas de negocio, y encuentra contradicciones entre documentos y código. |
 | **Ingeniero de datos** | Reconstruye el modelo de datos y la matriz CRUD, y después construye y valida la migración de datos. |
+| **Estimador** | Antes de cualquier diseño, estima tiempo, esfuerzo, equipo y costo en rangos P50/P80 con dos métodos independientes. Refina la estimación cuando se elige la arquitectura. |
 | **Arquitecto** | Propone 2 o 3 opciones destino puntuadas con criterios explícitos y después documenta la que elijas (ADR, arquitectura destino, olas de migración). |
 | **Diseñador UX** | Convierte las pantallas legadas en especificaciones de pantallas modernas y accesibles. |
 | **QA** | Define los casos dorados que prueban la equivalencia con el sistema legado y escribe los tests que fallan antes de que exista el código. |
@@ -33,21 +34,24 @@ importante.
 flowchart LR
   A[0 · Inicio] --> B[1 · Insumos]
   B -->|compuerta: fuentes| C[2 · Entendimiento]
-  C -->|compuerta: entendimiento| D[3 · Arquitectura]
-  D -->|compuerta: eliges la opción| E[4 · Planificación]
-  E -->|diagnóstico completo| F[5 · Fundación]
-  F -->|compuerta: fundación| G[6 · Construcción por sprints]
+  C -->|compuerta: entendimiento| X[3 · Estimación]
+  X -->|compuerta: tiempo, equipo y costo| D[4 · Arquitectura]
+  D -->|compuerta: eliges la opción| E[5 · Planificación]
+  E -->|diagnóstico completo| F[6 · Fundación]
+  F -->|compuerta: fundación| G[7 · Construcción por sprints]
   G -->|compuerta: cada sprint| G
-  G -->|ola completa| H[7 · Liberación]
+  G -->|ola completa| H[8 · Liberación]
   H -->|compuerta: liberación| G
 ```
+
+- **Estimación antes del diseño.** En cuanto se entiende el sistema, y antes de cualquier arquitectura, el estimador te dice cuánto tiempo llevará, con cuántas personas y a qué costo, en rangos (P50 y P80), con su nivel de confianza y todos los supuestos a la vista. Cuando eliges la arquitectura, la estimación se refina ola por ola y se concilia con el backlog.
 
 - **Cualquier tecnología.** No hay nada fijo: VB6, COBOL, PowerBuilder, Delphi, Oracle Forms, ASP clásico, .NET Framework, Java EE, PHP, Access… El analista de proyecto descubre el stack en lugar de suponerlo.
 - **Código, documentos o ambos.** Sin código, los agentes reconstruyen el sistema a partir de manuales, especificaciones, minutas y capturas (Word, Excel, PowerPoint, PDF, imágenes, texto) y dicen con claridad qué sigue sin saberse. Con las dos fuentes, las **cruzan** y reportan cada contradicción.
 - **Sin stack por defecto.** El arquitecto propone opciones según el negocio, los datos y tus restricciones (nube, conocimientos del equipo, tiempos, licencias), y **tú eliges**.
 - **Evidencia en cada hallazgo.** Cada regla o dato cita de dónde sale (una línea de código, una sección de un documento o tu respuesta) o queda marcado como supuesto con su nivel de confianza.
 - **Tests primero, roles separados.** QA escribe los tests, el desarrollador los hace pasar, y el revisor y seguridad revisan el resultado. Ningún agente aprueba su propio trabajo.
-- **Puedes parar cuando quieras.** Al terminar la fase 4 tienes un diagnóstico completo (assessment, arquitectura destino y backlog). Algunos proyectos solo necesitan eso.
+- **Puedes parar cuando quieras.** Al terminar la fase 3 tienes una estimación, y al terminar la 5 un diagnóstico completo (assessment, estimación, arquitectura destino y backlog). Algunos proyectos solo necesitan eso.
 
 ### Cómo se comunican los agentes
 
@@ -59,10 +63,10 @@ y una futura interfaz podrá mostrarlo en vivo.
 
 ```
 .modernia/
-├── config.json · state.json · board.json · backlog.json · questions.json · events.jsonl
+├── config.json · state.json · board.json · backlog.json · estimate.json · questions.json · events.jsonl
 ├── sources/        documentos convertidos a texto, métricas del código
-├── deliverables/   01-inventory · 02-business · 03-data · 04-architecture/ · 05-backlog
-│                   06-ux/ · 07-test-strategy · 08-security · 09-release/ · sprints/ · assessment
+├── deliverables/   01-inventory · 02-business · 03-data · 04-estimate · 05-architecture/ · 06-backlog
+│                   07-ux/ · 08-test-strategy · 09-security · 10-release/ · sprints/ · assessment
 └── reviews/        una revisión por historia
 ```
 
@@ -112,6 +116,7 @@ aprobación explícita para cada ambiente.
 ## Hoja de ruta
 
 - [x] Diagnóstico: inventario, negocio, datos, opciones de arquitectura, backlog y assessment
+- [x] Estimación de tiempo, equipo y costo antes del diseño, refinada después de la arquitectura
 - [x] Construcción: fundación, sprints, tests primero, revisión independiente, seguridad
 - [x] Liberación por olas, con runbook y vuelta atrás
 - [ ] Interfaz web que muestre el pizarrón en vivo (tablero, agentes, decisiones, preguntas)
@@ -124,7 +129,7 @@ aprobación explícita para cada ambiente.
 .claude-plugin/marketplace.json
 plugin/
 ├── .claude-plugin/plugin.json
-├── agents/        los 11 especialistas (un archivo Markdown cada uno)
+├── agents/        los 12 especialistas (un archivo Markdown cada uno)
 ├── skills/        modernize (el administrador) y status
 ├── reference/     convenciones que comparten todos los agentes
 └── scripts/       board.mjs (pizarrón), ingest.mjs (documentos), scan.mjs (métricas del código)

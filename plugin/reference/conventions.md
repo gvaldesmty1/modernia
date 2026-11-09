@@ -23,13 +23,15 @@ project's workspace, `.modernia/`, created by `/modernia:modernize`:
 | `deliverables/01-inventory.md` | project-analyst | What exists and what technology it uses |
 | `deliverables/02-business.md` | business-analyst | Capabilities, processes, business rules, contradictions |
 | `deliverables/03-data.md` | data-engineer | Data stores, entities, CRUD matrix, migration concerns |
-| `deliverables/04-architecture/` | architect | `options.md`, `target.md`, `adr/ADR-n-*.md` |
-| `deliverables/05-backlog.md` | scrum-master | Readable version of `backlog.json` with traceability |
+| `deliverables/04-estimate.md` | estimator | Time, effort, team and cost as ranges (initial, before the architecture; then refined) |
+| `estimate.json` | estimator | The estimate's numbers in machine-readable form |
+| `deliverables/05-architecture/` | architect | `options.md`, `target.md`, `adr/ADR-n-*.md` |
+| `deliverables/06-backlog.md` | scrum-master | Readable version of `backlog.json` with traceability |
 | `deliverables/assessment.md` | administrator | Executive summary of the diagnosis |
-| `deliverables/06-ux/` | ux-designer | `ux-guidelines.md` plus one screen spec per story with a UI |
-| `deliverables/07-test-strategy.md` | qa-engineer | Test levels, the equivalence approach, golden cases (`TC-n`) |
-| `deliverables/08-security.md` | security-engineer | Threat model and the cumulative security findings register (`SEC-n`) |
-| `deliverables/09-release/` | devops-engineer | `foundation.md`, `environments.md`, `runbook.md`, `rollback.md` |
+| `deliverables/07-ux/` | ux-designer | `ux-guidelines.md` plus one screen spec per story with a UI |
+| `deliverables/08-test-strategy.md` | qa-engineer | Test levels, the equivalence approach, golden cases (`TC-n`) |
+| `deliverables/09-security.md` | security-engineer | Threat model and the cumulative security findings register (`SEC-n`) |
+| `deliverables/10-release/` | devops-engineer | `foundation.md`, `environments.md`, `runbook.md`, `rollback.md` |
 | `deliverables/sprints/sprint-n.md` | scrum-master | Sprint plan, review and retrospective |
 | `reviews/US-n.md` | reviewer, security-engineer | Review and security findings per story |
 
@@ -44,7 +46,7 @@ human chooses in the foundation phase (usually its own git repository). The
 foundation is set by devops-engineer and developer and approved by the human.
 After that:
 
-- the structure, tools and commands documented in `deliverables/09-release/foundation.md` are the contract. Do not add new top-level folders, frameworks or tools without an ADR approved by the human;
+- the structure, tools and commands documented in `deliverables/10-release/foundation.md` are the contract. Do not add new top-level folders, frameworks or tools without an ADR approved by the human;
 - **tests belong to qa-engineer and product code belongs to developer**. Neither edits the other's files. If a test looks wrong, the developer reports it and does not change it;
 - infrastructure, pipelines and deployment files belong to devops-engineer;
 - nobody commits secrets. Configuration goes in environment variables or a secret store, with documented example files (`.env.example`).
