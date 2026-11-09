@@ -53,6 +53,26 @@ flowchart LR
 - **Evidence on every finding.** Each rule or fact cites where it comes from (a code line, a document section or your answer) or is marked as an assumption with its confidence level.
 - **Tests first, separate roles.** QA writes the tests, the developer makes them pass, and the reviewer and the security engineer check the result. No agent approves its own work.
 - **Stop whenever you want.** After phase 3 you have an estimate, and after phase 5 a complete diagnosis (the assessment, the estimate, the target architecture and the backlog). Some projects need only that.
+- **The right Claude model for each task.** Modernia is not tied to one model. See below.
+
+### The right model for each task
+
+For every piece of work, the administrator chooses among Claude **Haiku**,
+**Sonnet**, **Opus** and **Fable**, based on the role, the difficulty, the risk
+and the size of that specific task.
+
+| Model | Profile | Typical use |
+|---|---|---|
+| Haiku | Fastest and cheapest | Mechanical, well-specified work: planning tasks, small inventories, simple stories |
+| Sonnet | Balanced | Most analysis and coding: inventories, data, UX, tests, DevOps |
+| Opus | Deep reasoning | Business rules, estimation, architecture, complex stories, reviews |
+| Fable | Most capable | The hardest and highest-stakes work, and escalations after another model fell short |
+
+- **It escalates** one tier when a result falls short, and **de-escalates** repetitive work that is going well. It never cheapens estimation, architecture options, the review of money or authorization rules, or the security gate.
+- **You set the policy**: `balanced` (default), `economy` or `quality`. You can pin a model for a specific role, and change any of this at any time by asking ("make it cheaper", "use the best model for the architecture").
+- **Every choice is logged with its reason**, and the dashboard shows which model each agent is using.
+
+The full policy is in [plugin/reference/models.md](plugin/reference/models.md).
 
 ### How the agents communicate
 
@@ -159,7 +179,7 @@ plugin/
 ├── agents/        the 12 specialists (one Markdown file each)
 ├── skills/        modernize (the administrator), status and dashboard
 ├── ui/            the dashboard: server.mjs and public/
-├── reference/     conventions shared by every agent
+├── reference/     conventions shared by every agent, and the model routing policy
 └── scripts/       board.mjs (blackboard), ingest.mjs (documents), scan.mjs (code metrics)
 ```
 

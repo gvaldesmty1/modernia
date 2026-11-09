@@ -27,7 +27,8 @@ const T = {
     waitingHow: 'Responde en Claude Code con /modernia:modernize.',
     allClear: 'No hay nada esperando tu respuesta', allClearSub: 'Los agentes están trabajando o el proyecto está al día.',
     openQuestions: 'Preguntas abiertas', blocking: 'bloqueantes', blockingSingle: 'bloqueante', blockingOne: 'Bloqueante',
-    type: { start: 'inicio', done: 'terminado', finding: 'hallazgo', warning: 'alerta', decision: 'decisión', question: 'pregunta', answer: 'respuesta', task: 'tarea', gate: 'aprobación', phase: 'fase', info: 'info' },
+    type: { start: 'inicio', done: 'terminado', finding: 'hallazgo', warning: 'alerta', decision: 'decisión', question: 'pregunta', answer: 'respuesta', task: 'tarea', gate: 'aprobación', phase: 'fase', info: 'info', model: 'modelo' },
+    policy: { balanced: 'Modelos: equilibrado', economy: 'Modelos: económico', quality: 'Modelos: máxima calidad' }, modelsUsed: 'Modelos usados', modelNow: 'Modelo',
     tasks: 'Tareas', stories: 'Historias', points: 'puntos', estimateKpi: 'Estimación (P50)',
     noEstimate: 'Todavía no hay estimación', recentActivity: 'Actividad reciente', seeAll: 'Ver todo',
     working: 'Trabajando', idle: 'En espera', notStarted: 'Aún no participa', lastAction: 'Última acción',
@@ -69,7 +70,8 @@ const T = {
     waitingHow: 'Answer in Claude Code with /modernia:modernize.',
     allClear: 'Nothing is waiting for you', allClearSub: 'The agents are working or the project is up to date.',
     openQuestions: 'Open questions', blocking: 'blocking', blockingSingle: 'blocking', blockingOne: 'Blocking',
-    type: { start: 'start', done: 'done', finding: 'finding', warning: 'warning', decision: 'decision', question: 'question', answer: 'answer', task: 'task', gate: 'approval', phase: 'phase', info: 'info' },
+    type: { start: 'start', done: 'done', finding: 'finding', warning: 'warning', decision: 'decision', question: 'question', answer: 'answer', task: 'task', gate: 'approval', phase: 'phase', info: 'info', model: 'model' },
+    policy: { balanced: 'Models: balanced', economy: 'Models: economy', quality: 'Models: maximum quality' }, modelsUsed: 'Models used', modelNow: 'Model',
     tasks: 'Tasks', stories: 'Stories', points: 'points', estimateKpi: 'Estimate (P50)',
     noEstimate: 'No estimate yet', recentActivity: 'Recent activity', seeAll: 'See all',
     working: 'Working', idle: 'Waiting', notStarted: 'Not involved yet', lastAction: 'Last action',
@@ -192,6 +194,16 @@ function openQuestions() {
     .sort((a, b) => Number(b.blocking) - Number(a.blocking));
 }
 
+function modelLabel(tier) {
+  return { haiku: 'Haiku', sonnet: 'Sonnet', opus: 'Opus', fable: 'Fable' }[String(tier).toLowerCase()] || tier;
+}
+
+function modelsUsed() {
+  const count = {};
+  for (const e of app.snap.events) if (e.type === 'model') { const k = modelLabel(e.msg.split(':')[0].trim()); count[k] = (count[k] || 0) + 1; }
+  return Object.entries(count);
+}
+
 function agentStatus(id) {
   const events = app.snap.events.filter((e) => e.agent === id);
   const last = events[events.length - 1];
@@ -207,6 +219,7 @@ function agentStatus(id) {
     last,
     doingTask,
     done: events.filter((e) => e.type === 'done').length,
+    model: [...events].reverse().find((e) => e.type === 'model')?.msg.split(':')[0].trim(),
   };
 }
 
@@ -218,7 +231,8 @@ function renderFrame() {
   document.title = `${config.project?.name || 'Modernia'} · Modernia`;
   $('#project').innerHTML = `<strong>${esc(config.project?.name)}</strong>
     <span class="chip">${esc(t(`mode.${config.mode}`))}</span>
-    <span class="chip accent">${esc(t(`phase.${state.phase}`))}</span>`;
+    <span class="chip accent">${esc(t(`phase.${state.phase}`))}</span>
+    <span class="chip">${esc(t(`policy.${config.modelPolicy || 'balanced'}`))}</span>`;
   setLive(Boolean(app.live));
   $('#lang').textContent = app.lang === 'es' ? 'EN' : 'ES';
   $('#lang').title = app.lang === 'es' ? 'Switch to English' : 'Cambiar a español';
@@ -279,7 +293,7 @@ function viewOverview() {
         <section class="card"><h2>${t('nowWorking')} <a href="#agents">${t('agents')}</a></h2>
           ${working.length ? `<ul class="feed">${working.map((id) => {
             const st = agentStatus(id);
-            return `<li>${avatar(id)}<div><span class="who">${esc(agentName(id))}</span> <span class="pulse"></span>
+            return `<li>${avatar(id)}<div><span class="who">${esc(agentName(id))}</span> <span class="pulse"></span>${st.model ? ` <span class="chip">${esc(modelLabel(st.model))}</span>` : ''}
               <div class="msg muted small">${esc(st.doingTask?.title || st.last?.msg || '')}</div></div><time>${ago(st.last?.ts)}</time></li>`;
           }).join('')}</ul>` : `<p class="muted">${t('nobodyWorking')}</p>`}
         </section>
@@ -338,7 +352,8 @@ function viewPhases() {
 function viewAgents() {
   const ids = ['administrator', ...Object.keys(AGENTS).filter((x) => x !== 'administrator')];
   return `
-    <div class="page-head"><div><h1>${t('agents')}</h1><p>${Object.keys(AGENTS).length} ${t('agentsCount')}</p></div></div>
+    <div class="page-head"><div><h1>${t('agents')}</h1><p>${Object.keys(AGENTS).length} ${t('agentsCount')}</p></div>
+      ${modelsUsed().length ? `<div class="filters"><span class="small muted">${t('modelsUsed')}:</span>${modelsUsed().map(([m, n]) => `<span class="chip">${esc(m)} × ${n}</span>`).join('')}</div>` : ''}</div>
     <div class="agents">${ids.map((id) => {
       const a = AGENTS[id];
       const st = agentStatus(id);
@@ -346,7 +361,7 @@ function viewAgents() {
         : st.started ? `<span class="chip">${t('idle')}</span>` : `<span class="chip faint">${t('notStarted')}</span>`;
       return `<article class="card agent${st.working ? ' working' : ''}">${avatar(id)}
         <div><h3>${esc(a[app.lang])}</h3><div class="role">${esc(app.lang === 'es' ? a.roleEs : a.roleEn)}</div>
-        <div class="filters">${status}${st.done ? `<span class="chip ok">${st.done} ✓</span>` : ''}</div></div>
+        <div class="filters">${status}${st.model ? `<span class="chip" title="${esc(t('modelNow'))}">${esc(modelLabel(st.model))}</span>` : ''}${st.done ? `<span class="chip ok">${st.done} ✓</span>` : ''}</div></div>
         ${st.doingTask || st.last ? `<div class="last"><strong>${t('lastAction')}:</strong> ${esc(st.doingTask?.title || st.last?.msg)} <span class="faint">· ${ago(st.last?.ts || st.doingTask?.updatedAt)}</span></div>` : ''}
       </article>`;
     }).join('')}</div>`;

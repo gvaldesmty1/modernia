@@ -14,7 +14,7 @@ consistent. You never do a specialist's analysis yourself.
 
 - `PLUGIN_ROOT` = two levels above this skill's base directory (the folder that contains `scripts/`, `agents/` and `reference/`). Resolve it to an absolute path.
 - `BOARD` = `node "<PLUGIN_ROOT>/scripts/board.mjs"`. Run it from the project root (the current working directory).
-- Read `<PLUGIN_ROOT>/reference/conventions.md` once per session.
+- Read `<PLUGIN_ROOT>/reference/conventions.md` and `<PLUGIN_ROOT>/reference/models.md` (which model to use for each piece of work) once per session.
 - Talk to the human in their language. Once the workspace exists, use `config.language`. Speak in everyday terms: systems, rules, decisions. Never mention internal IDs (`T-3`, `Q-5`) unless the human uses them first, and do not show raw JSON.
 
 ## Where are we?
@@ -66,11 +66,15 @@ Ask the human, in one message:
    format works: Word, Excel, PowerPoint, PDF, images, text.
 4. **Language** of the deliverables (Spanish or English). Default to the
    language the human writes in.
+5. Optional: **cost or quality preference**. Balanced (the default: each task
+   gets the Claude model that fits it), economy (lighter models wherever it is
+   safe) or maximum quality (the most capable models for analysis and
+   decisions). They can change it at any time.
 
 At least one of code or documentation is required. Then:
 
 ```bash
-BOARD init --name "<name>" --lang <es|en> [--code "<path>,<path>"] [--docs "<path>"] --plugin-root "<PLUGIN_ROOT>"
+BOARD init --name "<name>" --lang <es|en> [--code "<path>,<path>"] [--docs "<path>"] [--policy balanced|economy|quality] --plugin-root "<PLUGIN_ROOT>"
 ```
 
 If the current folder is a git repository, warn the human that `.modernia/`
@@ -204,8 +208,16 @@ Read `build.md` (next to this file) and follow it.
 
 ## Dispatching
 
-Use the Agent tool with `subagent_type: "modernia:<agent>"`. Every prompt
-includes:
+Use the Agent tool with `subagent_type: "modernia:<agent>"` and **the `model`
+parameter set for this specific piece of work**. Modernia is not tied to one
+Claude model: for every dispatch, choose `haiku`, `sonnet`, `opus` or `fable`
+following `<PLUGIN_ROOT>/reference/models.md`. Apply, in this order, the baseline
+for the role and task, the project's `config.modelPolicy`, any
+`config.modelOverrides` for that role, and the escalation signals (size,
+ambiguity, risk, earlier failures). Log each choice with
+`BOARD log --agent <agent> --type model --msg "<tier>: <reason>"`.
+
+Every prompt includes:
 
 - the absolute path of the project root and of `.modernia/`;
 - `PLUGIN_ROOT` (absolute);
@@ -229,6 +241,11 @@ the agent's task to `doing`; after it returns, move it to `done`, or to
 - Never deploy, and never let an agent deploy, without the explicit approval
   of the `release` gate for that specific environment.
 - If an agent fails or returns something unusable, retry once with a clearer
-  prompt. If it fails again, tell the human what happened.
+  prompt **and one model tier up** (see `models.md`). If it fails again, tell
+  the human what happened.
+- If the human asks to spend less, or for maximum quality, change the policy
+  with `BOARD policy economy|balanced|quality`. If they ask for a specific
+  model for a role, use `BOARD policy override <agent> <tier>`, or `auto` to
+  remove it. Confirm the change in one line.
 - Keep the human informed with one short line when each specialist starts and
   finishes. Do not narrate tool calls.

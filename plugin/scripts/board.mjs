@@ -19,6 +19,8 @@
 //   q      answer <Q-n> --text <t> [--by human]
 //   q      list [--open]
 //   log    --agent <a> --type <type> --msg <text> [--ref <ID>]
+//   policy <balanced|economy|quality>                                model policy for the project
+//   policy override <agent> <haiku|sonnet|opus|fable|auto>           pin (or unpin) one role's model
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -31,7 +33,10 @@ const STORY_STATUS = ['not-ready', 'todo', 'doing', 'testing', 'review', 'blocke
 const STEP_STATUS = ['todo', 'doing', 'done', 'blocked', 'skipped'];
 const TASK_STATUS = ['todo', 'doing', 'blocked', 'done'];
 const GATE_STATUS = ['pending', 'approved', 'rejected'];
-const EVENT_TYPES = ['start', 'done', 'finding', 'warning', 'decision', 'question', 'answer', 'task', 'gate', 'phase', 'info'];
+const EVENT_TYPES = ['start', 'done', 'finding', 'warning', 'decision', 'question', 'answer', 'task', 'gate', 'phase', 'info', 'model'];
+const POLICIES = ['balanced', 'economy', 'quality'];
+const TIERS = ['haiku', 'sonnet', 'opus', 'fable'];
+const AGENTS = ['scrum-master', 'project-analyst', 'business-analyst', 'data-engineer', 'estimator', 'architect', 'ux-designer', 'qa-engineer', 'developer', 'reviewer', 'security-engineer', 'devops-engineer'];
 
 function parse(args) {
   const pos = [];
@@ -135,6 +140,8 @@ function init() {
     mode,
     sources: { code, docs },
     target: null,
+    modelPolicy: oneOf(opt.policy || 'balanced', POLICIES, '--policy'),
+    modelOverrides: {},
     pluginRoot,
     createdAt,
   });
@@ -169,6 +176,8 @@ function show() {
   }
   const count = (s) => tasks.filter((t) => t.status === s).length;
   console.log(`Project: ${config.project.name}  |  mode: ${config.mode}  |  language: ${config.language}`);
+  const overrides = Object.entries(config.modelOverrides || {});
+  console.log(`Model policy: ${config.modelPolicy || 'balanced'}${overrides.length ? `  (overrides: ${overrides.map(([a, m]) => `${a}=${m}`).join(', ')})` : ''}`);
   console.log(`Phase: ${state.phase}${state.sprint ? ` · sprint ${state.sprint}` : ''}${config.target ? ` · target: ${config.target}` : ''}`);
   console.log(`Gates: ${Object.entries(state.gates).map(([g, v]) => `${g}=${v.status}`).join('  ')}`);
   const { stories = [] } = read('backlog.json');
@@ -393,10 +402,29 @@ function log() {
   console.log('logged');
 }
 
-const commands = { init, show, phase, step, gate, target, sprint, story, task, q: questions, log };
+function policy() {
+  const config = read('config.json');
+  config.modelOverrides ??= {};
+  if (pos[1] === 'override') {
+    const agent = oneOf(pos[2], AGENTS, 'agent');
+    const tier = oneOf(pos[3], [...TIERS, 'auto'], 'model');
+    if (tier === 'auto') delete config.modelOverrides[agent];
+    else config.modelOverrides[agent] = tier;
+    write('config.json', config);
+    event('human', 'decision', `Model for ${agent}: ${tier}`);
+    console.log(`override ${agent}=${tier}`);
+    return;
+  }
+  config.modelPolicy = oneOf(pos[1], POLICIES, 'policy');
+  write('config.json', config);
+  event('human', 'decision', `Model policy: ${config.modelPolicy}`);
+  console.log(`policy=${config.modelPolicy}`);
+}
+
+const commands = { init, show, phase, step, gate, target, sprint, story, task, q: questions, log, policy };
 const cmd = commands[pos[0]];
 if (!cmd) {
-  console.log('usage: board.mjs <init|show|phase|step|gate|target|sprint|story|task|q|log> ... [--ws <dir>]');
+  console.log('usage: board.mjs <init|show|phase|step|gate|target|sprint|story|task|q|log|policy> ... [--ws <dir>]');
   process.exit(pos[0] ? 1 : 0);
 }
 cmd();

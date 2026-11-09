@@ -54,6 +54,26 @@ flowchart LR
 - **Evidencia en cada hallazgo.** Cada regla o dato cita de dónde sale (una línea de código, una sección de un documento o tu respuesta) o queda marcado como supuesto con su nivel de confianza.
 - **Tests primero, roles separados.** QA escribe los tests, el desarrollador los hace pasar, y el revisor y seguridad revisan el resultado. Ningún agente aprueba su propio trabajo.
 - **Puedes parar cuando quieras.** Al terminar la fase 3 tienes una estimación, y al terminar la 5 un diagnóstico completo (assessment, estimación, arquitectura destino y backlog). Algunos proyectos solo necesitan eso.
+- **El modelo de Claude adecuado para cada tarea.** Modernia no está atado a un solo modelo. Ver abajo.
+
+### El modelo adecuado para cada tarea
+
+En cada encargo, el administrador elige entre Claude **Haiku**, **Sonnet**,
+**Opus** y **Fable**, según el rol, la dificultad, el riesgo y el tamaño de esa
+tarea en particular.
+
+| Modelo | Perfil | Uso típico |
+|---|---|---|
+| Haiku | El más rápido y económico | Trabajo mecánico y bien definido: planificar tareas, inventarios chicos, historias simples |
+| Sonnet | Equilibrado | La mayor parte del análisis y del código: inventarios, datos, UX, tests, DevOps |
+| Opus | Razonamiento profundo | Reglas de negocio, estimación, arquitectura, historias complejas, revisiones |
+| Fable | El más capaz | Lo más difícil y de mayor riesgo, y las escaladas cuando otro modelo no alcanzó |
+
+- **Sube** un nivel cuando un resultado no alcanza y **baja** en el trabajo repetitivo que va bien. Nunca abarata la estimación, las opciones de arquitectura, la revisión de reglas de dinero o de autorización, ni la aprobación de seguridad.
+- **Tú defines la política**: `balanced` (equilibrada, por defecto), `economy` (económica) o `quality` (máxima calidad). También puedes fijar un modelo para un rol, y cambiar todo esto cuando quieras pidiéndolo ("hazlo más barato", "usa el mejor modelo para la arquitectura").
+- **Cada elección queda registrada con su motivo**, y el tablero visual muestra qué modelo usa cada agente.
+
+La política completa está en [plugin/reference/models.md](plugin/reference/models.md).
 
 ### Cómo se comunican los agentes
 
@@ -161,7 +181,7 @@ plugin/
 ├── agents/        los 12 especialistas (un archivo Markdown cada uno)
 ├── skills/        modernize (el administrador), status y dashboard
 ├── ui/            el tablero visual: server.mjs y public/
-├── reference/     convenciones que comparten todos los agentes
+├── reference/     convenciones que comparten todos los agentes y la política de modelos
 └── scripts/       board.mjs (pizarrón), ingest.mjs (documentos), scan.mjs (métricas del código)
 ```
 

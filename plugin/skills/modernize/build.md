@@ -63,7 +63,8 @@ Stories share the target repository, so never build two at once.
    `modernia:security-engineer` in mode `story`. Save both reports in
    `.modernia/reviews/US-n.md`.
 5. **Fix round**: if there are blocking or major findings, dispatch the
-   implementer in mode `fix` with those findings, then review again. After 2
+   implementer in mode `fix` with those findings (the second round goes one
+   model tier up, per `reference/models.md`), then review again. After 2
    rounds with blocking findings still open, mark the story `blocked`, tell the
    human what is stuck and move on to the next story. A major finding can be
    accepted only by the human, with a reason that you record in the review file.
