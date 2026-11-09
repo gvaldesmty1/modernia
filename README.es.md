@@ -33,16 +33,18 @@ importante.
 ```mermaid
 flowchart LR
   A[0 · Inicio] --> B[1 · Insumos]
-  B -->|compuerta: fuentes| C[2 · Entendimiento]
-  C -->|compuerta: entendimiento| X[3 · Estimación]
-  X -->|compuerta: tiempo, equipo y costo| D[4 · Arquitectura]
-  D -->|compuerta: eliges la opción| E[5 · Planificación]
-  E -->|diagnóstico completo| F[6 · Fundación]
-  F -->|compuerta: fundación| G[7 · Construcción por sprints]
-  G -->|compuerta: cada sprint| G
-  G -->|ola completa| H[8 · Liberación]
-  H -->|compuerta: liberación| G
+  B -->|✔ apruebas el material| C[2 · Entendimiento]
+  C -->|✔ apruebas el análisis| X[3 · Estimación]
+  X -->|✔ apruebas tiempo, equipo y costo| D[4 · Arquitectura]
+  D -->|✔ eliges y apruebas la arquitectura| E[5 · Planificación]
+  E -->|✔ apruebas el plan y decides construir| F[6 · Fundación]
+  F -->|✔ apruebas el esqueleto| G[7 · Construcción por sprints]
+  G -->|✔ aceptas cada sprint| G
+  G -->|✔ apruebas la ola| H[8 · Liberación]
+  H -->|✔ apruebas la liberación, siguiente ola| G
 ```
+
+- **Cada fase necesita tu aprobación.** Cada fase termina mostrándote sus resultados y preguntándote si se avanza, y nada sigue sin tu sí explícito. No es solo una recomendación, está forzado: el tablero se niega a cambiar de fase hasta que la actual esté aprobada, las fases avanzan de una en una, y volver a una fase anterior obliga a aprobar de nuevo todas las fases desde ahí.
 
 - **Estimación antes del diseño.** En cuanto se entiende el sistema, y antes de cualquier arquitectura, el estimador te dice cuánto tiempo llevará, con cuántas personas y a qué costo, en rangos (P50 y P80), con su nivel de confianza y todos los supuestos a la vista. Cuando eliges la arquitectura, la estimación se refina ola por ola y se concilia con el backlog.
 

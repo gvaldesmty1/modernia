@@ -32,16 +32,18 @@ each release. You approve every important decision.
 ```mermaid
 flowchart LR
   A[0 · Setup] --> B[1 · Intake]
-  B -->|gate: sources| C[2 · Understanding]
-  C -->|gate: understanding| X[3 · Estimation]
-  X -->|gate: time, team and cost| D[4 · Architecture]
-  D -->|gate: you choose the option| E[5 · Planning]
-  E -->|diagnosis complete| F[6 · Foundation]
-  F -->|gate: foundation| G[7 · Build by sprints]
-  G -->|gate: each sprint| G
-  G -->|wave complete| H[8 · Release]
-  H -->|gate: release| G
+  B -->|✔ you approve the material| C[2 · Understanding]
+  C -->|✔ you approve the analysis| X[3 · Estimation]
+  X -->|✔ you approve time, team and cost| D[4 · Architecture]
+  D -->|✔ you choose and approve the architecture| E[5 · Planning]
+  E -->|✔ you approve the plan and decide to build| F[6 · Foundation]
+  F -->|✔ you approve the skeleton| G[7 · Build by sprints]
+  G -->|✔ you accept each sprint| G
+  G -->|✔ you approve the wave| H[8 · Release]
+  H -->|✔ you approve the release, next wave| G
 ```
+
+- **Every phase needs your approval.** Each phase ends by showing you its results and asking whether to move on, and nothing advances without your explicit yes. This is enforced, not just recommended: the board refuses to change phase until the current one is approved, phases advance one at a time, and going back to an earlier phase means approving every phase again from there.
 
 - **Estimate before design.** As soon as the system is understood, and before any architecture, the estimator tells you how long it will take, with how many people and at what cost, as ranges (P50 and P80) with its confidence level and every assumption visible. After you choose the architecture, the estimate is refined wave by wave and reconciled with the backlog.
 

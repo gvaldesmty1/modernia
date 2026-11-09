@@ -27,8 +27,9 @@ setup, the dispatching rules and the general rules of `SKILL.md` still apply.
    (with the golden cases that need their confirmation) and the threat model
    summary. Ask the human to confirm the golden cases marked "needs human"
    now, or to run them against the legacy system if they can. Record the
-   answers as questions. If the human approves, run `BOARD gate foundation approved`
-   and `BOARD phase build`, and commit the foundation in the target
+   answers as questions. Ask explicitly for approval to start building. If the
+   human approves, run `BOARD gate foundation approved` and `BOARD phase build`,
+   and commit the foundation in the target
    (`chore: foundation`).
 
 ## Phase 7 · build (one sprint at a time)
@@ -83,15 +84,22 @@ appears. Relay blocking questions immediately, one at a time.
    human's comments as notes, so that QA updates the tests first.
 3. Run `BOARD gate sprint-n approved`.
 4. If this sprint **completes a migration wave** (see `05-architecture/target.md`),
-   offer to release it now (strangler releases happen per wave) → go to
-   **Phase 8**. Otherwise, start the next sprint.
+   or there are no stories left, go to the gate `build`. Otherwise, start the next sprint.
 
-When there are no stories left, go to Phase 8 for the final release.
+### Gate `build` · the wave is ready to release
+
+Present the wave as a whole: the stories done, the business rules now covered
+by the new system, the test results (the full suite and the equivalence
+cases), the open review or security findings and the stories that were
+deferred. Ask the human whether this wave is complete and can move on to the
+release (strangler releases happen per wave).
+
+- Approved → `BOARD gate build approved --note "Wave n"`, then `BOARD phase release`.
+- Not yet → `BOARD gate build rejected --note "<what is missing>"`, and continue with more sprints.
 
 ## Phase 8 · release (per wave)
 
-1. Run `BOARD phase release`. Dispatch `modernia:scrum-master` in mode `plan`
-   for phase `release`.
+1. Dispatch `modernia:scrum-master` in mode `plan` for phase `release`.
 2. In parallel: `modernia:security-engineer` in mode `release` and
    `modernia:devops-engineer` in mode `release` (prepare only).
 3. **Gate `release`**: present the security verdict (GO or NO-GO with the
@@ -111,7 +119,8 @@ When there are no stories left, go to Phase 8 for the final release.
    approval and the environments. Production always needs a second explicit
    "yes" after non-production succeeds.
 5. Tag the release in the target (`git tag wave-n`). If backlog remains, run
-   `BOARD gate release pending` and `BOARD phase build`, and continue with the
+   `BOARD phase build --reason "Next wave"` (this resets the `build` and
+   `release` gates, which the next wave must earn again) and continue with the
    next sprint. If nothing remains, run `BOARD phase done`, update
    `deliverables/assessment.md` with a **Delivery** section (what was built,
    released and retired, the final metrics and the open items), and close the

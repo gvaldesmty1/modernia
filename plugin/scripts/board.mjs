@@ -4,9 +4,10 @@
 //
 //   init   --name <n> --lang es|en [--code <path>[,<path>]] [--docs <path>[,<path>]] --plugin-root <dir> [--force]
 //   show   [--json]
-//   phase  <name>
+//   phase  <name> [--reason <text>]   forward only if the current phase's gate is approved;
+//                                     backward needs --reason and resets the gates in between
 //   step   <name> <todo|doing|done|blocked|skipped> [--note <text>]
-//   gate   <name> <pending|approved|rejected> [--note <text>]      (sprint gates: sprint-<n>)
+//   gate   <phase> <pending|approved|rejected> [--note <text>]     only the current phase; sprint-<n> in build
 //   target <path> [--create]                                         where the modernized code lives
 //   sprint <n>                                                       current sprint
 //   story  move <US-n> <status> [--by <agent>] [--note <text>]
@@ -23,7 +24,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const PHASES = ['intake', 'understanding', 'estimation', 'architecture', 'planning', 'foundation', 'build', 'release', 'done'];
-const GATES = ['sources', 'understanding', 'estimation', 'architecture', 'foundation', 'release'];
+// Every phase ends with a human gate of the same name. The board refuses to
+// advance to the next phase until the current phase's gate is approved.
+const GATES = PHASES.filter((p) => p !== 'done');
 const STORY_STATUS = ['not-ready', 'todo', 'doing', 'testing', 'review', 'blocked', 'done'];
 const STEP_STATUS = ['todo', 'doing', 'done', 'blocked', 'skipped'];
 const TASK_STATUS = ['todo', 'doing', 'blocked', 'done'];
@@ -186,10 +189,44 @@ function show() {
   for (const q of open) console.log(`  ${q.id}${q.blocking ? ' [BLOCKING]' : ''} (${q.by}) ${q.text}`);
 }
 
+// Workspaces created before 0.3.0 called the intake gate "sources".
+function normalizeGates(s) {
+  if (s.gates.sources && !s.gates.intake) { s.gates.intake = s.gates.sources; delete s.gates.sources; }
+  for (const g of GATES) s.gates[g] ??= { status: 'pending' };
+}
+
 function phase() {
   const name = oneOf(pos[1], PHASES, 'phase');
-  touchState((s) => { s.phase = name; });
-  event('administrator', 'phase', `Phase: ${name}`);
+  const state = read('state.json');
+  normalizeGates(state);
+  const from = PHASES.indexOf(state.phase);
+  const to = PHASES.indexOf(name);
+  if (to === from) { console.log(`phase=${name} (unchanged)`); return; }
+
+  if (to > from) {
+    // Forward: one phase at a time, and only with the current phase approved.
+    const current = state.gates[state.phase];
+    if (current?.status !== 'approved') {
+      fail(`phase "${state.phase}" is not approved yet. Present its results to the human and record their decision with: gate ${state.phase} approved`);
+    }
+    const stopEarly = name === 'done' && ['planning', 'release'].includes(state.phase);
+    if (to !== from + 1 && !stopEarly) fail(`phases advance one at a time: after "${state.phase}" comes "${PHASES[from + 1]}"`);
+  } else {
+    // Backward (rework, or the next wave after a release): needs a reason, and
+    // every gate from the target phase onwards must be approved again.
+    if (!opt.reason || opt.reason === true) fail('going back to an earlier phase needs --reason "<why>"');
+    state.gateHistory ??= [];
+    for (const g of GATES.slice(to, from + 1)) {
+      if (state.gates[g].status !== 'pending') {
+        state.gateHistory.push({ gate: g, ...state.gates[g], resetAt: now(), reason: opt.reason });
+        state.gates[g] = { status: 'pending' };
+      }
+    }
+  }
+  state.phase = name;
+  state.updatedAt = now();
+  write('state.json', state);
+  event('administrator', 'phase', `Phase: ${name}${to < from ? ` (back: ${opt.reason})` : ''}`);
   console.log(`phase=${name}`);
 }
 
@@ -207,7 +244,12 @@ function gate() {
   if (!GATES.includes(name) && !/^sprint-\d+$/.test(name)) fail(`gate must be one of: ${GATES.join(', ')}, sprint-<n>`);
   const status = oneOf(pos[2], GATE_STATUS, 'gate status');
   touchState((s) => {
-    s.gates[name] = { status, at: now(), ...(opt.note ? { note: opt.note } : {}) };
+    normalizeGates(s);
+    if (GATES.includes(name) && name !== s.phase) {
+      fail(`only the current phase can be approved or rejected (current: "${s.phase}", asked: "${name}")`);
+    }
+    if (/^sprint-\d+$/.test(name) && s.phase !== 'build') fail('sprint gates belong to the build phase');
+    s.gates[name] = { status, at: now(), ...(opt.note && opt.note !== true ? { note: opt.note } : {}) };
   });
   event('human', 'gate', `Gate ${name}: ${status}${opt.note ? ` — ${opt.note}` : ''}`);
   console.log(`gate ${name}=${status}`);
