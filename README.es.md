@@ -107,6 +107,32 @@ cuando quieras.
 Muestra en qué fase está el proyecto, qué hizo cada agente, qué se decidió y
 qué preguntas esperan tu respuesta.
 
+### Tablero visual
+
+```
+/modernia:dashboard
+```
+
+Abre una página web local (`http://127.0.0.1:4747`) que sigue el proyecto en
+vivo mientras los agentes trabajan. Muestra:
+
+- **Resumen**: qué espera tu aprobación, las 8 fases con su estado, los números clave, los agentes trabajando ahora y la actividad reciente;
+- **Fases y aprobaciones**: cada aprobación con su nota y fecha, los sprints aceptados y las aprobaciones que se reabrieron;
+- **Agentes**: los 13 roles, qué está haciendo cada uno y su última acción;
+- **Tablero** y **Backlog y sprints**: tareas e historias en columnas, con el avance por sprint y por épica;
+- **Preguntas**: las abiertas (primero las bloqueantes) y las respuestas dadas;
+- **Estimación**: los escenarios de equipo con sus rangos P50 → P80 en semanas, horas y costo;
+- **Entregables**: cada documento renderizado, con sus diagramas Mermaid;
+- **Actividad**: el registro completo, filtrable por agente.
+
+El tablero es de solo lectura: las aprobaciones y respuestas se siguen dando en
+Claude Code. No requiere instalación (es un servidor Node sin dependencias que
+escucha solo en `127.0.0.1`). Carga el renderizador de Markdown y diagramas
+desde un CDN; sin internet, los documentos se muestran como texto. También se
+puede abrir a mano con `node plugin/ui/server.mjs --ws <ruta>/.modernia --open`.
+Agrega `?static` a la URL para ver una instantánea sin conexión en vivo (para
+imprimir o capturar).
+
 ## Privacidad
 
 `.modernia/` contiene información derivada del material del cliente. Decide si
@@ -121,7 +147,8 @@ aprobación explícita para cada ambiente.
 - [x] Estimación de tiempo, equipo y costo antes del diseño, refinada después de la arquitectura
 - [x] Construcción: fundación, sprints, tests primero, revisión independiente, seguridad
 - [x] Liberación por olas, con runbook y vuelta atrás
-- [ ] Interfaz web que muestre el pizarrón en vivo (tablero, agentes, decisiones, preguntas)
+- [x] Tablero visual en vivo, de solo lectura (fases, agentes, tablero, backlog, preguntas, estimación, entregables)
+- [ ] Aprobar fases y responder preguntas desde el tablero visual
 - [ ] Ejecución desatendida con el Claude Agent SDK, para CI
 - [ ] Sincronización del backlog con Jira y Azure Boards
 
@@ -132,7 +159,8 @@ aprobación explícita para cada ambiente.
 plugin/
 ├── .claude-plugin/plugin.json
 ├── agents/        los 12 especialistas (un archivo Markdown cada uno)
-├── skills/        modernize (el administrador) y status
+├── skills/        modernize (el administrador), status y dashboard
+├── ui/            el tablero visual: server.mjs y public/
 ├── reference/     convenciones que comparten todos los agentes
 └── scripts/       board.mjs (pizarrón), ingest.mjs (documentos), scan.mjs (métricas del código)
 ```

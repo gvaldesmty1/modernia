@@ -11,8 +11,8 @@
     {
       "name": "modernia",
       "source": "./plugin",
-      "description": "A team of 13 AI agents that modernizes a legacy system in any technology, from code, documents or both: diagnosis, estimation (time, team and cost), architecture options, backlog, build by sprints (tests first, independent review, security) and release by waves, with human approval gates.",
-      "version": "0.3.0",
+      "description": "A team of 13 AI agents that modernizes a legacy system in any technology, from code, documents or both: diagnosis, estimation (time, team and cost), architecture options, backlog, build by sprints (tests first, independent review, security) and release by waves, with human approval gates, plus a live dashboard.",
+      "version": "0.4.0",
       "category": "development",
       "keywords": [
         "modernization",

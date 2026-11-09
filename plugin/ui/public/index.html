@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modernia</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234f46e5'/%3E%3Cpath d='M8 23V9l8 8 8-8v14' stroke='white' stroke-width='3' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#overview" aria-label="Modernia">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8"/><path d="M8 23V9l8 8 8-8v14"/></svg>
+      <span>Modernia</span>
+    </a>
+    <div class="project" id="project"></div>
+    <div class="top-actions">
+      <span class="live" id="live" title=""><i></i><span></span></span>
+      <button class="lang" id="lang" type="button"></button>
+    </div>
+  </header>
+  <div class="shell">
+    <nav class="nav" id="nav" aria-label="Secciones"></nav>
+    <main class="main" id="view" tabindex="-1"></main>
+  </div>
+  <noscript>Modernia necesita JavaScript. / Modernia needs JavaScript.</noscript>
+</body>
+</html>

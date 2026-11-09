@@ -106,6 +106,31 @@ time.
 Shows where the project is, what each agent did, what was decided and which
 questions are waiting for you.
 
+### Dashboard
+
+```
+/modernia:dashboard
+```
+
+Opens a local web page (`http://127.0.0.1:4747`) that follows the project live
+while the agents work. It shows:
+
+- **Overview**: what is waiting for your approval, the 8 phases with their gates, key numbers, the agents working now and recent activity;
+- **Phases and approvals**: every gate with its note and date, the accepted sprints and the gates that were reopened;
+- **Agents**: the 13 roles, what each one is doing and its last action;
+- **Board** and **Backlog and sprints**: tasks and stories in kanban columns, with progress per sprint and per epic;
+- **Questions**: open ones (blocking first) and the answers given;
+- **Estimate**: team scenarios with their P50 → P80 ranges in weeks, hours and cost;
+- **Deliverables**: every document rendered, including its Mermaid diagrams;
+- **Activity**: the full log, filterable by agent.
+
+The dashboard is read-only: approvals and answers are still given in Claude Code.
+It needs no installation (a zero-dependency Node server that listens only on
+`127.0.0.1`). It loads the Markdown and diagram renderer from a CDN; without
+internet, documents are shown as plain text. You can also start it by hand with
+`node plugin/ui/server.mjs --ws <path>/.modernia --open`. Add `?static` to the
+URL for a snapshot without the live connection (to print or capture it).
+
 ## Privacy
 
 `.modernia/` contains information derived from the client's material. Decide
@@ -120,7 +145,8 @@ explicit approval for each environment.
 - [x] Estimation of time, team and cost before the design, refined after the architecture
 - [x] Build: foundation, sprints, tests first, independent review, security
 - [x] Release by waves, with runbook and rollback
-- [ ] Web UI that shows the blackboard live (board, agents, decisions, questions)
+- [x] Live, read-only dashboard (phases, agents, board, backlog, questions, estimate, deliverables)
+- [ ] Approve gates and answer questions from the dashboard
 - [ ] Headless runner with the Claude Agent SDK, for CI
 - [ ] Sync of the backlog with Jira and Azure Boards
 
@@ -131,7 +157,8 @@ explicit approval for each environment.
 plugin/
 ├── .claude-plugin/plugin.json
 ├── agents/        the 12 specialists (one Markdown file each)
-├── skills/        modernize (the administrator) and status
+├── skills/        modernize (the administrator), status and dashboard
+├── ui/            the dashboard: server.mjs and public/
 ├── reference/     conventions shared by every agent
 └── scripts/       board.mjs (blackboard), ingest.mjs (documents), scan.mjs (code metrics)
 ```
