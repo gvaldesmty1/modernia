@@ -1,0 +1,7 @@
+# Workspaces derived from client material never belong in this repository
+.modernia/
+
+node_modules/
+*.tmp
+.DS_Store
+Thumbs.db

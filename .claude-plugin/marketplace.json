@@ -1,0 +1,27 @@
+{
+  "name": "modernia",
+  "owner": {
+    "name": "Gustavo Valdespino",
+    "url": "https://github.com/gvaldesmty1"
+  },
+  "metadata": {
+    "description": "Multi-agent framework for modernizing software systems from code, documents or both."
+  },
+  "plugins": [
+    {
+      "name": "modernia",
+      "source": "./plugin",
+      "description": "A team of 12 AI agents that modernizes a legacy system in any technology, from code, documents or both: diagnosis, architecture options, backlog, build by sprints (tests first, independent review, security) and release by waves, with human approval gates.",
+      "version": "0.1.0",
+      "category": "development",
+      "keywords": [
+        "modernization",
+        "legacy",
+        "migration",
+        "multi-agent",
+        "architecture",
+        "reverse-engineering"
+      ]
+    }
+  ]
+}

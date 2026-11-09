@@ -1,0 +1,19 @@
+{
+  "name": "modernia",
+  "version": "0.1.0",
+  "description": "A team of 12 AI agents that modernizes a legacy system in any technology, from code, documents or both: diagnosis, architecture options, backlog, build by sprints (tests first, independent review, security) and release by waves, with human approval gates.",
+  "author": {
+    "name": "Gustavo Valdespino",
+    "url": "https://github.com/gvaldesmty1"
+  },
+  "homepage": "https://github.com/gvaldesmty1/modernia",
+  "repository": "https://github.com/gvaldesmty1/modernia",
+  "license": "MIT",
+  "keywords": [
+    "modernization",
+    "legacy",
+    "migration",
+    "multi-agent",
+    "architecture"
+  ]
+}
