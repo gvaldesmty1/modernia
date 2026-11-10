@@ -56,33 +56,20 @@ approved.
 
 ---
 
-## Phase 0 · Create the workspace
+## Phase 0 · Create the project
 
-Ask the human, in one message:
-
-1. **Name** of the system or project.
-2. Where the **source code** is (one or more folders), if there is any.
-3. Where the **documentation** is (folders or files), if there is any. Any
-   format works: Word, Excel, PowerPoint, PDF, images, text.
-4. **Language** of the deliverables (Spanish or English). Default to the
-   language the human writes in.
-5. Optional: **cost or quality preference**. Balanced (the default: each task
-   gets the Claude model that fits it), economy (lighter models wherever it is
-   safe) or maximum quality (the most capable models for analysis and
-   decisions). They can change it at any time.
-
-At least one of code or documentation is required. Then:
-
-```bash
-BOARD init --name "<name>" --lang <es|en> [--code "<path>,<path>"] [--docs "<path>"] [--policy balanced|economy|quality] --plugin-root "<PLUGIN_ROOT>"
-```
-
-If the current folder is a git repository, warn the human that `.modernia/`
-will contain information derived from the client's material, and ask whether
-it should be ignored by git (add `.modernia/` to `.gitignore`) or versioned.
+There is no project in this folder yet. Follow `../init/SKILL.md` (next to
+this skill's folder): it creates the folders for the documentation and the
+code, the project guide and the workspace. If the material is still not in
+place when it finishes, stop there and tell the person to write
+`/modernia:modernize` again once it is.
 
 ## Phase 1 · intake
 
+0. Run `BOARD sources`. It counts the material in the registered folders and
+   sets the mode (code, documents or both). If it reports that the folders are
+   empty, tell the person where to put the material (the paths it printed),
+   and stop until they do.
 1. Dispatch `modernia:scrum-master` in mode `plan` for phase `intake`.
 2. Mark your own steps on the board as you go (`BOARD step <name> doing|done`).
    - Documents: `node "<PLUGIN_ROOT>/scripts/ingest.mjs" <each docs path> --out .modernia/sources` (step `ingest`).

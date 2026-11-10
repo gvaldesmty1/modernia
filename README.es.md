@@ -108,17 +108,40 @@ O, dentro de Claude Code: `/plugin marketplace add gvaldesmty1/modernia` y despu
 
 ## Uso
 
-Abre Claude Code en la carpeta donde quieras guardar el trabajo del proyecto
-(puede ser el repositorio legado o una carpeta vacía junto a él):
+**1. Crea el proyecto.** Abre Claude Code en una carpeta vacía (una por cada sistema a modernizar) y ejecuta:
+
+```
+/modernia:init
+```
+
+Te pregunta el nombre del sistema, el idioma de los entregables (español o
+inglés), si tienes documentación, código o ambos, y si ese material ya está en
+otra carpeta (puede copiarlo o solo referenciarlo). Después crea el proyecto:
+
+```
+mi-sistema/
+├── fuentes/
+│   ├── documentos/  ← manuales, especificaciones, minutas, diagramas, capturas
+│   └── codigo/      ← el código fuente legado (si lo hay)
+├── LEEME.md         ← qué va en cada carpeta y los siguientes pasos
+└── .modernia/       ← el trabajo de los agentes: estado, tablero, entregables
+```
+
+En inglés, las carpetas son `sources/documents/` y `sources/code/`, y la guía
+es `README.md`.
+
+**2. Pon el material en su carpeta**, si no se copió ya.
+
+**3. Arranca la modernización:**
 
 ```
 /modernia:modernize
 ```
 
-El administrador te pregunta el nombre del proyecto, dónde está el código,
-dónde están los documentos y el idioma de los entregables (español o inglés).
-Después te guía fase por fase. Vuelve a ejecutar el mismo comando para seguir
-cuando quieras.
+El administrador revisa el material, detecta el modo (código, documentos o
+ambos) y te guía fase por fase. Vuelve a ejecutar el mismo comando para seguir
+cuando quieras. Cada vez que abras Claude Code dentro del proyecto, Modernia le
+indica a Claude en qué punto está.
 
 ```
 /modernia:status
@@ -179,7 +202,8 @@ aprobación explícita para cada ambiente.
 plugin/
 ├── .claude-plugin/plugin.json
 ├── agents/        los 12 especialistas (un archivo Markdown cada uno)
-├── skills/        modernize (el administrador), status y dashboard
+├── skills/        init, modernize (el administrador), status y dashboard
+├── hooks/         al iniciar la sesión: le indica a Claude en qué punto está el proyecto
 ├── ui/            el tablero visual: server.mjs y public/
 ├── reference/     convenciones que comparten todos los agentes y la política de modelos
 └── scripts/       board.mjs (pizarrón), ingest.mjs (documentos), scan.mjs (métricas del código)

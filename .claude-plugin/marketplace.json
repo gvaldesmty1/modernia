@@ -12,7 +12,7 @@
       "name": "modernia",
       "source": "./plugin",
       "description": "A team of 13 AI agents that modernizes a legacy system in any technology, from code, documents or both: diagnosis, estimation (time, team and cost), architecture options, backlog, build by sprints (tests first, independent review, security) and release by waves, with human approval gates, a live dashboard, and the right Claude model (Haiku, Sonnet, Opus or Fable) chosen for each task.",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "category": "development",
       "keywords": [
         "modernization",

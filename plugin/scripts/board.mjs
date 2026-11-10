@@ -4,6 +4,7 @@
 //
 //   init   --name <n> --lang es|en [--code <path>[,<path>]] [--docs <path>[,<path>]] --plugin-root <dir> [--force]
 //   show   [--json]
+//   sources                                                          count the material and recompute the mode
 //   phase  <name> [--reason <text>]   forward only if the current phase's gate is approved;
 //                                     backward needs --reason and resets the gates in between
 //   step   <name> <todo|doing|done|blocked|skipped> [--note <text>]
@@ -402,6 +403,45 @@ function log() {
   console.log('logged');
 }
 
+function countFiles(p) {
+  let n = 0;
+  const walk = (dir) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (e.name.startsWith('.') || e.name.startsWith('~$')) continue;
+      const abs = path.join(dir, e.name);
+      if (e.isDirectory()) walk(abs);
+      else n++;
+    }
+  };
+  try {
+    if (fs.statSync(p).isFile()) return 1;
+    walk(p);
+  } catch {
+    return 0;
+  }
+  return n;
+}
+
+// Checks which source folders already have material and recomputes the mode.
+function sources() {
+  const config = read('config.json');
+  const list = (kind) => config.sources[kind].map((p) => ({ p, n: countFiles(p) }));
+  const code = list('code');
+  const docs = list('docs');
+  for (const x of code) console.log(`code: ${x.p} (${x.n} files)`);
+  for (const x of docs) console.log(`docs: ${x.p} (${x.n} files)`);
+  const hasCode = code.some((x) => x.n > 0);
+  const hasDocs = docs.some((x) => x.n > 0);
+  if (!hasCode && !hasDocs) fail('the source folders are empty: put the documents or the code in them first');
+  const mode = hasCode && hasDocs ? 'both' : hasCode ? 'code' : 'docs';
+  if (mode !== config.mode) {
+    config.mode = mode;
+    write('config.json', config);
+    event('administrator', 'info', `Mode: ${mode}`);
+  }
+  console.log(`mode=${mode}`);
+}
+
 function policy() {
   const config = read('config.json');
   config.modelOverrides ??= {};
@@ -421,10 +461,10 @@ function policy() {
   console.log(`policy=${config.modelPolicy}`);
 }
 
-const commands = { init, show, phase, step, gate, target, sprint, story, task, q: questions, log, policy };
+const commands = { init, show, sources, phase, step, gate, target, sprint, story, task, q: questions, log, policy };
 const cmd = commands[pos[0]];
 if (!cmd) {
-  console.log('usage: board.mjs <init|show|phase|step|gate|target|sprint|story|task|q|log|policy> ... [--ws <dir>]');
+  console.log('usage: board.mjs <init|show|sources|phase|step|gate|target|sprint|story|task|q|log|policy> ... [--ws <dir>]');
   process.exit(pos[0] ? 1 : 0);
 }
 cmd();

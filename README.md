@@ -107,17 +107,41 @@ Or, inside Claude Code: `/plugin marketplace add gvaldesmty1/modernia`, then `/p
 
 ## Usage
 
-Open Claude Code in the folder where you want to keep the project's work (it
-can be the legacy repository or an empty folder next to it):
+**1. Create the project.** Open Claude Code in an empty folder (one per system to modernize) and run:
+
+```
+/modernia:init
+```
+
+It asks for the system's name, the language of the deliverables (English or
+Spanish), whether you have documentation, code or both, and whether that
+material is already somewhere else (it can copy it or just reference it). Then
+it creates the project:
+
+```
+my-system/
+├── sources/
+│   ├── documents/   ← manuals, specifications, minutes, diagrams, screenshots
+│   └── code/        ← the legacy source code (if there is any)
+├── README.md        ← what goes where and the next steps
+└── .modernia/       ← the agents' work: state, board, deliverables
+```
+
+With Spanish as the language, the folders are `fuentes/documentos/` and
+`fuentes/codigo/`, and the guide is `LEEME.md`.
+
+**2. Put the material in its folder**, if it was not copied already.
+
+**3. Start the modernization:**
 
 ```
 /modernia:modernize
 ```
 
-The administrator asks for the project's name, where the code is, where the
-documents are and the language for the deliverables (English or Spanish). Then
-it guides you phase by phase. Run the same command again to continue at any
-time.
+The administrator checks the material, detects the mode (code, documents or
+both) and guides you phase by phase. Run the same command again to continue at
+any time. Whenever you open Claude Code inside the project, Modernia tells
+Claude where the project stands.
 
 ```
 /modernia:status
@@ -177,7 +201,8 @@ explicit approval for each environment.
 plugin/
 ├── .claude-plugin/plugin.json
 ├── agents/        the 12 specialists (one Markdown file each)
-├── skills/        modernize (the administrator), status and dashboard
+├── skills/        init, modernize (the administrator), status and dashboard
+├── hooks/         session start: tells Claude where a Modernia project stands
 ├── ui/            the dashboard: server.mjs and public/
 ├── reference/     conventions shared by every agent, and the model routing policy
 └── scripts/       board.mjs (blackboard), ingest.mjs (documents), scan.mjs (code metrics)
