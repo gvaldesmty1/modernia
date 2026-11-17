@@ -42,7 +42,7 @@ const T = {
     recommended: 'Recomendado', confidence: 'Confianza', conf: { low: 'baja', medium: 'media', high: 'alta' }, agentsCount: 'roles trabajando sobre el mismo pizarrón', version: { initial: 'Inicial (antes del diseño)', refined: 'Refinada (con la arquitectura)' },
     waves: 'Por ola', wave: 'Ola', ratesPending: 'tarifas pendientes', readFull: 'Leer la estimación completa',
     noDocs: 'Todavía no hay entregables.', chooseDoc: 'Elige un entregable de la lista.', updated: 'Actualizado',
-    reviews: 'Revisiones', sprints: 'Sprints', architecture: 'Arquitectura', ux: 'UX', release: 'Liberación', general: 'Diagnóstico y plan',
+    reviews: 'Revisiones', sprints: 'Sprints', architecture: 'Arquitectura', cloud: 'Nube', agentic: 'Arquitectura agéntica', ux: 'UX', release: 'Liberación', general: 'Diagnóstico y plan',
     allAgents: 'Todos los agentes', history: 'Historial', reset: 'reabierta', note: 'Nota', target: 'Repositorio destino',
     gateHistory: 'Aprobaciones anteriores', sprintGates: 'Sprints aceptados', readOnly: 'Solo lectura',
     progress: 'Avance', of: 'de', you: 'Tú',
@@ -85,7 +85,7 @@ const T = {
     recommended: 'Recommended', confidence: 'Confidence', conf: { low: 'low', medium: 'medium', high: 'high' }, agentsCount: 'roles working on the same blackboard', version: { initial: 'Initial (before design)', refined: 'Refined (with the architecture)' },
     waves: 'By wave', wave: 'Wave', ratesPending: 'rates pending', readFull: 'Read the full estimate',
     noDocs: 'No deliverables yet.', chooseDoc: 'Choose a deliverable from the list.', updated: 'Updated',
-    reviews: 'Reviews', sprints: 'Sprints', architecture: 'Architecture', ux: 'UX', release: 'Release', general: 'Diagnosis and plan',
+    reviews: 'Reviews', sprints: 'Sprints', architecture: 'Architecture', cloud: 'Cloud', agentic: 'Agentic architecture', ux: 'UX', release: 'Release', general: 'Diagnosis and plan',
     allAgents: 'All agents', history: 'History', reset: 'reopened', note: 'Note', target: 'Target repository',
     gateHistory: 'Earlier approvals', sprintGates: 'Accepted sprints', readOnly: 'Read-only',
     progress: 'Progress', of: 'of', you: 'You',
@@ -100,6 +100,11 @@ const AGENTS = {
   'data-engineer': { es: 'Ingeniero de datos', en: 'Data Engineer', roleEs: 'Modelo de datos y migración', roleEn: 'Data model and migration', color: '#65a30d' },
   estimator: { es: 'Estimador', en: 'Estimator', roleEs: 'Tiempo, equipo y costo', roleEn: 'Time, team and cost', color: '#ca8a04' },
   architect: { es: 'Arquitecto', en: 'Architect', roleEs: 'Opciones, ADR y olas de migración', roleEn: 'Options, ADRs and migration waves', color: '#ea580c' },
+  'cloud-architect': { es: 'Arquitecto de nube', en: 'Cloud Architect', roleEs: 'Lidera AWS, Azure y GCP; compara y consolida', roleEn: 'Leads AWS, Azure and GCP; compares and consolidates', color: '#0284c7' },
+  'aws-specialist': { es: 'Especialista AWS', en: 'AWS Specialist', roleEs: 'Arquitectura, migración y costos en AWS', roleEn: 'Architecture, migration and cost on AWS', color: '#d97706' },
+  'azure-specialist': { es: 'Especialista Azure', en: 'Azure Specialist', roleEs: 'Arquitectura, migración y costos en Azure', roleEn: 'Architecture, migration and cost on Azure', color: '#0369a1' },
+  'gcp-specialist': { es: 'Especialista GCP', en: 'GCP Specialist', roleEs: 'Arquitectura, migración y costos en Google Cloud', roleEn: 'Architecture, migration and cost on Google Cloud', color: '#15803d' },
+  'agentic-architect': { es: 'Arquitecto agéntico', en: 'Agentic Architect', roleEs: 'Dónde y cómo incorporar agentes de IA', roleEn: 'Where and how to add AI agents', color: '#be185d' },
   'ux-designer': { es: 'Diseñador UX', en: 'UX Designer', roleEs: 'Pantallas modernas y accesibles', roleEn: 'Modern, accessible screens', color: '#db2777' },
   'qa-engineer': { es: 'QA', en: 'QA Engineer', roleEs: 'Equivalencia y tests primero', roleEn: 'Equivalence and tests first', color: '#9333ea' },
   developer: { es: 'Desarrollador', en: 'Developer', roleEs: 'Implementa cada historia', roleEn: 'Implements each story', color: '#2563eb' },
@@ -114,7 +119,8 @@ const STATIC = new URLSearchParams(location.search).has('static');
 // Unique avatar codes [es, en].
 const SHORT = {
   administrator: ['ADM', 'ADM'], 'scrum-master': ['SM', 'SM'], 'project-analyst': ['AP', 'PA'], 'business-analyst': ['AN', 'BA'],
-  'data-engineer': ['DAT', 'DAT'], estimator: ['EST', 'EST'], architect: ['ARQ', 'ARC'], 'ux-designer': ['UX', 'UX'],
+  'data-engineer': ['DAT', 'DAT'], estimator: ['EST', 'EST'], architect: ['ARQ', 'ARC'], 'cloud-architect': ['NUB', 'CLD'], 'aws-specialist': ['AWS', 'AWS'],
+  'azure-specialist': ['AZ', 'AZ'], 'gcp-specialist': ['GCP', 'GCP'], 'agentic-architect': ['AGT', 'AGT'], 'ux-designer': ['UX', 'UX'],
   'qa-engineer': ['QA', 'QA'], developer: ['DEV', 'DEV'], reviewer: ['REV', 'REV'], 'security-engineer': ['SEG', 'SEC'], 'devops-engineer': ['OPS', 'OPS'],
 };
 
@@ -469,6 +475,8 @@ function viewEstimate() {
 function docGroup(p) {
   if (p.startsWith('reviews/')) return 'reviews';
   if (p.includes('/sprints/')) return 'sprints';
+  if (p.includes('/05-architecture/cloud/')) return 'cloud';
+  if (p.includes('/05-architecture/agentic/')) return 'agentic';
   if (p.includes('/05-architecture/')) return 'architecture';
   if (p.includes('/07-ux/')) return 'ux';
   if (p.includes('/10-release/')) return 'release';
@@ -478,7 +486,7 @@ function docGroup(p) {
 function viewDocs() {
   const files = app.snap.files;
   if (!files.length) return `<div class="page-head"><h1>${t('docs')}</h1></div><div class="empty">${t('noDocs')}</div>`;
-  const groups = ['general', 'architecture', 'ux', 'sprints', 'reviews', 'release'];
+  const groups = ['general', 'architecture', 'cloud', 'agentic', 'ux', 'sprints', 'reviews', 'release'];
   const list = groups.map((g) => {
     const l = files.filter((f) => docGroup(f.path) === g);
     if (!l.length) return '';

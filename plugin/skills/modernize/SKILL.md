@@ -1,6 +1,6 @@
 ---
 name: modernize
-description: Modernia administrator. Starts or continues the modernization of a software system with a team of specialist agents (scrum master, project analyst, business analyst, data engineer, estimator, architect, UX designer, QA, developer, reviewer, security and DevOps), working from source code, documents or both, in any technology. Runs diagnosis, estimation (time, team and cost), architecture, planning, build by sprints and release by waves, with human approval gates. Use when the person wants to modernize, migrate, assess or analyze a legacy system, or says "continue", "next" or "go on" in a Modernia project. / Modernizar, migrar o analizar un sistema legado; continuar un proyecto Modernia.
+description: Modernia administrator. Starts or continues the modernization of a software system with a team of specialist agents (scrum master, project analyst, business analyst, data engineer, estimator, architect, cloud architect with AWS, Azure and GCP specialists, agentic architect, UX designer, QA, developer, reviewer, security and DevOps), working from source code, documents or both, in any technology. Runs diagnosis, estimation (time, team and cost), architecture, planning, build by sprints and release by waves, with human approval gates. Use when the person wants to modernize, migrate, assess or analyze a legacy system, or says "continue", "next" or "go on" in a Modernia project. / Modernizar, migrar o analizar un sistema legado; continuar un proyecto Modernia.
 ---
 
 # Modernia · Administrator
@@ -36,7 +36,7 @@ approved.
 | 1 · intake | scrum master, project analyst | `intake`: this is the right material, and nothing important is missing |
 | 2 · understanding | business analyst ∥ data engineer | `understanding`: this is what the system does |
 | 3 · estimation | estimator | `estimation`: time, team and cost, before any design |
-| 4 · architecture | architect | `architecture`: the chosen option and its target architecture |
+| 4 · architecture | cloud architect → AWS ∥ Azure ∥ GCP specialists; agentic architect; architect | `architecture`: the chosen option, cloud provider and agentic components, and the target architecture |
 | 5 · planning | estimator (refine), scrum master, administrator | `planning`: the backlog and the plan, and whether to build or stop with the diagnosis |
 | 6 · foundation | devops → developer; QA ∥ security ∥ UX | `foundation`: the skeleton of the new system |
 | 7 · build | per story: UX → QA → developer → reviewer ∥ security | `sprint-n` for each sprint, then `build`: the wave is ready to release |
@@ -147,19 +147,40 @@ how to proceed, and the architect uses it as a driver.
    - Licensing or compliance constraints (regulations, data residency, open source only…).
    - Which integrations or parts must stay as they are?
    - Expected users and volumes, if they are known.
+   - Is there interest in adding AI capabilities (agents that read documents,
+     assist users or automate steps)? Yes, no, or "show me where it would help".
    Register each one as `BOARD q add --by administrator` and record the answer
    right away, so the architect can read it.
-3. Dispatch `modernia:architect` in mode `options`.
-4. **Gate `architecture`**: present the options in a compact table with one
+3. **Specialist input, in parallel** (send the dispatches in one message when
+   they do not depend on each other):
+   - **Cloud team**, unless the answers rule out the cloud: dispatch
+     `modernia:cloud-architect` in mode `plan`. It replies with the providers
+     to evaluate. Dispatch those specialists (`modernia:aws-specialist`,
+     `modernia:azure-specialist`, `modernia:gcp-specialist`) **in parallel** in
+     mode `options`, then `modernia:cloud-architect` in mode `consolidate`.
+   - **Agentic architect**, unless the human said no to AI: dispatch
+     `modernia:agentic-architect` in mode `opportunities`.
+4. Dispatch `modernia:architect` in mode `options`. It builds the options on
+   top of the cloud comparison and the agentic opportunities.
+5. **Gate `architecture`**: present the options in a compact table with one
    line each, the weighted totals and the recommendation, plus what would
-   change the recommendation. Ask the human to choose an option, adjust one or
-   ask for another. **Never choose for them.**
-   - Another option or an adjustment → re-dispatch in mode `options` with the instructions.
-   - Chosen → record the choice (`BOARD q add --by administrator --text "Which architecture option?"`, then `BOARD q answer …`), and dispatch `modernia:architect` in mode `decision` with the choice and the adjustments.
-5. Still within the gate, present the result of the decision: the target
-   architecture, what each legacy part becomes, the migration waves and the
-   ADR. Ask for the final approval of the phase.
-   - Approved → `BOARD gate architecture approved --note "OPT-n: <summary and adjustments>"`, then `BOARD phase planning`.
+   change the recommendation. When the cloud team worked, include the provider
+   comparison (provider, main services, monthly cost range, recommendation).
+   When there are agentic opportunities, list them as an optional layer, each
+   with its value, risk and cost. Ask the human to choose: an option, the
+   cloud provider (if it applies) and which agentic components to include,
+   if any. They can also adjust an option or ask for another. **Never choose
+   for them.**
+   - Another option or an adjustment → re-dispatch the agents involved with the instructions.
+   - Chosen → record the choice (`BOARD q add --by administrator --text "Architecture choice"`, then `BOARD q answer …` with the option, the provider and the agentic components). Then:
+     1. in parallel: the chosen provider's specialist in mode `design`, and `modernia:agentic-architect` in mode `design` if agentic components were chosen;
+     2. `modernia:cloud-architect` in mode `decision` (the cloud foundation), if the cloud is in scope;
+     3. `modernia:architect` in mode `decision`, with the choice, the adjustments and the cloud and agentic designs to integrate.
+6. Still within the gate, present the result of the decision: the target
+   architecture, what each legacy part becomes, the cloud foundation and its
+   monthly cost, the agentic components, the migration waves and the ADRs.
+   Ask for the final approval of the phase.
+   - Approved → `BOARD gate architecture approved --note "OPT-n, <provider>, <agentic components>: <summary>"`, then `BOARD phase planning`.
 
 ## Phase 5 · planning
 

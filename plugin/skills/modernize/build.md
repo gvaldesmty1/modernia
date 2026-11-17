@@ -16,6 +16,11 @@ setup, the dispatching rules and the general rules of `SKILL.md` still apply.
 3. Dispatch `modernia:devops-engineer` in mode `foundation`, then
    `modernia:developer` in mode `foundation`. They run in that order because
    the developer builds on the repository and tooling that devops creates.
+   If the target is in the cloud, DevOps builds the infrastructure as code
+   from `05-architecture/cloud/target-cloud.md` and the chosen provider's
+   design. Then dispatch that provider's specialist (for example,
+   `modernia:azure-specialist`) in mode `review` on the infrastructure as code,
+   and send any blocking findings back to DevOps.
 4. In parallel with step 3 (in one message): `modernia:qa-engineer` in mode
    `strategy`, `modernia:security-engineer` in mode `threat-model` and, if the
    system has a UI, `modernia:ux-designer` in mode `guidelines`.
@@ -60,8 +65,9 @@ Stories share the target repository, so never build two at once.
 4. **Review**, in parallel (one message): `modernia:reviewer` and, when the
    story touches authentication, authorization, sensitive data, input from
    users or external systems, or adds dependencies,
-   `modernia:security-engineer` in mode `story`. Save both reports in
-   `.modernia/reviews/US-n.md`.
+   `modernia:security-engineer` in mode `story`. When the story has
+   `"agentic": true`, add `modernia:agentic-architect` in mode `review`. Save
+   all the reports in `.modernia/reviews/US-n.md`.
 5. **Fix round**: if there are blocking or major findings, dispatch the
    implementer in mode `fix` with those findings (the second round goes one
    model tier up, per `reference/models.md`), then review again. After 2
@@ -102,7 +108,11 @@ release (strangler releases happen per wave).
 
 1. Dispatch `modernia:scrum-master` in mode `plan` for phase `release`.
 2. In parallel: `modernia:security-engineer` in mode `release` and
-   `modernia:devops-engineer` in mode `release` (prepare only).
+   `modernia:devops-engineer` in mode `release` (prepare only). If the target
+   is in the cloud, also dispatch the chosen provider's specialist in mode
+   `review` on the runbook and the infrastructure for this wave. Its blocking
+   findings count like security's: they block the release until fixed or
+   explicitly accepted by the human.
 3. **Gate `release`**: present the security verdict (GO or NO-GO with the
    reasons), the runbook, the data migration with its validation, the
    rollback plan and what will change for the users. Ask the human:

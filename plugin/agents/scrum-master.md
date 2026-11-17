@@ -33,8 +33,13 @@ Adapt the plan to `config.mode` and to what the inventory says:
   depending on the inventory. Skip the data-engineer task, with a note, only if
   the inventory shows that the system has no persistent data of its own.
 - **estimation**: one task for the estimator (`initial` estimate), depending on the understanding tasks.
-- **architecture**: an architect `options` task and an architect `decision`
-  task, which depends on the human gate.
+- **architecture**: when the cloud is in scope, a cloud-architect `plan` task,
+  one `options` task per provider specialist it names (aws-specialist,
+  azure-specialist, gcp-specialist), and a cloud-architect `consolidate` task;
+  an agentic-architect `opportunities` task unless the human said no to AI;
+  an architect `options` task depending on those; and, after the human gate,
+  the `design` tasks (the chosen provider specialist and the agentic architect),
+  a cloud-architect `decision` task and an architect `decision` task.
 - **planning**: one task for the estimator (`refine`), one for you (backlog,
   after the refined estimate) and one for the administrator (assessment).
 - **foundation**: tasks for devops-engineer (delivery foundation), developer
@@ -56,13 +61,17 @@ Inputs: all deliverables, especially `02-business.md` (`BR-n`, `BP-n`, `CAP-n`),
 
 1. **Epics** (`EP-n`): one per migration wave, plus cross-cutting epics where
    the architecture calls for them (foundation and environments, data migration,
-   security hardening, cut-over).
+   security hardening, cut-over). Add a **cloud foundation** epic when the
+   target is in the cloud, and one epic per chosen agentic component
+   (`AGT-n`), with its evaluation set as part of the acceptance criteria.
 2. **Stories** (`US-n`): "As a <actor>, I want…, so that…", with 2 to 5
    acceptance criteria in Given/When/Then form. **Every acceptance criterion
    that comes from a rule cites the rule (`BR-n`)** and uses its exact values.
    Add an equivalence check where the legacy behavior must be preserved. If a
    contradiction (`CON-n`) is still unresolved, the story cites it and is
-   **not ready**: say which question it waits for.
+   **not ready**: say which question it waits for. Mark the stories that build
+   an agentic component with `"agentic": true`, so that the agentic architect
+   reviews them.
 3. **Sizing**: `size` (XS to XL) and Fibonacci `points`, reasoned from the
    complexity in the inventory and the number of rules involved. Do not split
    hairs. Give a short explanation per epic.

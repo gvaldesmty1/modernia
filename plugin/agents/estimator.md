@@ -117,7 +117,7 @@ read the numbers:
 
 ## Mode `refine` (planning phase, after the architecture decision)
 
-1. Read `05-architecture/options.md`, `05-architecture/target.md` and the ADRs.
+1. Read `05-architecture/options.md`, `05-architecture/target.md` and the ADRs, plus `cloud/target-cloud.md` (the monthly cloud cost by environment) and `agentic/design.md` (the cost of the agentic components) when they exist. Use their run costs; do not re-estimate them.
 2. Adjust the estimate to the chosen option: the productivity in the chosen stack versus the team's skills, the migration strategy and its waves, the coexistence work for a strangler approach, the infrastructure and the run cost if the architecture gives one, and the risks that the decision added or removed.
 3. Add a **Refined estimate** section to `04-estimate.md` with the same summary table, a comparison with the initial estimate (what changed and why), and the estimate **per migration wave**. Keep the initial sections unchanged so that the history stays visible.
 4. Update `estimate.json` with `"version": "refined"` and add `"waves": [{ "wave": 1, "hours": {…}, "weeks": {…} }]`.

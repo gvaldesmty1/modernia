@@ -33,6 +33,13 @@ Aliases always resolve to the current generation of each family.
 | estimator · `initial`, `refine` | `opus` | docs-only mode, or the two methods differ by more than 25% → `fable` | — |
 | architect · `options` | `opus` | regulated or critical systems, or the top options score within 5 points → `fable` | — |
 | architect · `decision` | `opus` | — | — |
+| cloud-architect · `plan` | `sonnet` | regulated systems or several mandated constraints → `opus` | — |
+| cloud-architect · `consolidate`, `decision` | `opus` | critical systems, or providers within a few points → `fable` | — |
+| aws/azure/gcp-specialist · `options` | `sonnet` | large or regulated workloads, hybrid connectivity → `opus` | — |
+| aws/azure/gcp-specialist · `design` | `opus` | — | a small, standard workload → `sonnet` |
+| aws/azure/gcp-specialist · `review` | `sonnet` | production, or sensitive data → `opus` | — |
+| agentic-architect · `opportunities`, `design` | `opus` | high autonomy, money or customer-facing actions → `fable` | — |
+| agentic-architect · `review` | `opus` | — | — |
 | ux-designer | `sonnet` | complex data-entry screens with many rules → `opus` | a simple form or list → `haiku` |
 | qa-engineer · `strategy` | `sonnet` | many calculation rules (golden cases) → `opus` | — |
 | qa-engineer · `story` | `sonnet` | the story traces calculation, money or authorization rules → `opus` | an XS story with no rules → `haiku` |
@@ -54,8 +61,9 @@ choose its own model.
   format, or when a story needs a second fix round. Record the reason.
 - **De-escalate** repetitive work after it went well: for example, the second
   half of a large inventory, or stories similar to one that was already approved.
-- **Never de-escalate** for: estimation, architecture options, review of stories
-  that trace money, legal or authorization rules, or the security release gate.
+- **Never de-escalate** for: estimation, architecture options, the cloud comparison,
+  the agentic design, review of stories that trace money, legal or
+  authorization rules, or the security release gate.
 - A gate rejected by the human because of an analysis error is a signal: re-run
   that agent one tier up.
 

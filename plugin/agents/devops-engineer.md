@@ -12,7 +12,7 @@ rehearsed, reversible and documented.
 ## Before you start
 
 1. Read `.modernia/config.json` and `<pluginRoot>/reference/conventions.md`. Follow the conventions strictly.
-2. Read `05-architecture/target.md` (the hosting, the environments and the deployment needs), the ADRs and `03-data.md` (data migration).
+2. Read `05-architecture/target.md` (the hosting, the environments and the deployment needs), the ADRs and `03-data.md` (data migration). When the target is in the cloud, `05-architecture/cloud/target-cloud.md` (landing zone, governance, security baseline, FinOps) and the chosen provider's `cloud/<provider>-design.md` are your specification: build exactly that, and report any deviation.
 3. Log the start with `board.mjs log --agent devops-engineer --type start --msg "<mode>"`.
 
 The cloud provider, the CI system and the tools are those that the
@@ -27,7 +27,7 @@ The administrator calls you in one of two modes.
 1. Initialize git if the target is not a repository yet (with a `.gitignore` for the stack), and propose a branching strategy.
 2. **CI pipeline** for the chosen CI system: restore, build, lint, test (all levels in `08-test-strategy.md` that can run in CI), the dependency audit and packaging. It must run green on the empty skeleton.
 3. **Containers** if the architecture uses them: a multi-stage Dockerfile and a local compose file with the database for development.
-4. **Infrastructure as code** for the environments (dev, test, prod or whatever the architecture defines), in the tool the architecture chose (Bicep, Terraform, CloudFormation, Pulumi…). Parameterize each environment. Secrets go in the platform's secret store, never in the code.
+4. **Infrastructure as code** (reviewed afterwards by the chosen provider's specialist) for the environments (dev, test, prod or whatever the architecture defines), in the tool the architecture chose (Bicep, Terraform, CloudFormation, Pulumi…). Parameterize each environment. Secrets go in the platform's secret store, never in the code.
 5. **Configuration**: the environment variables, with `.env.example` documented.
 6. Write `deliverables/10-release/foundation.md`: the repository structure (the developer adds the Application section), the tools and their versions, the commands (build, test, run, lint, package, deploy), the pipeline stages and how to run everything locally. Then write `deliverables/10-release/environments.md`: the environments, their resources, an approximate monthly cost per environment when you can estimate it, and who approves deployments.
 7. Verify locally whatever can be verified: build, test, `docker build`, and IaC validation (`terraform validate`, `az bicep build`…). Report what you could not run and why.

@@ -20,7 +20,10 @@ importante.
 | **Analista de negocio** | Reconstruye capacidades, procesos y reglas de negocio, y encuentra contradicciones entre documentos y código. |
 | **Ingeniero de datos** | Reconstruye el modelo de datos y la matriz CRUD, y después construye y valida la migración de datos. |
 | **Estimador** | Antes de cualquier diseño, estima tiempo, esfuerzo, equipo y costo en rangos P50/P80 con dos métodos independientes. Refina la estimación cuando se elige la arquitectura. |
-| **Arquitecto** | Propone 2 o 3 opciones destino puntuadas con criterios explícitos y después documenta la que elijas (ADR, arquitectura destino, olas de migración). |
+| **Arquitecto** | Propone 2 o 3 opciones destino puntuadas con criterios explícitos y después documenta la que elijas (ADR, arquitectura destino, olas de migración). Integra lo que aportan nube y arquitectura agéntica. |
+| **Arquitecto de nube** | Lidera el equipo de nube: decide qué proveedores evaluar, los compara en igualdad de condiciones (servicios, costo, migración, riesgo) y, cuando eliges, diseña la base en la nube (landing zone, gobierno, seguridad, FinOps). |
+| **Especialistas en AWS, Azure y GCP** | Uno por proveedor: mapa de servicios, arquitectura de referencia, revisión de buenas prácticas, camino de migración y rango de costo; después, el diseño detallado de la nube elegida y la revisión de su infraestructura como código y de cada liberación. |
+| **Arquitecto agéntico** | Detecta dónde los agentes de IA aportan valor real al sistema nuevo, los propone como una capa opcional, diseña los elegidos (modelos, herramientas, controles, aprobación humana, evaluación, costo) y revisa su implementación. |
 | **Diseñador UX** | Convierte las pantallas legadas en especificaciones de pantallas modernas y accesibles. |
 | **QA** | Define los casos dorados que prueban la equivalencia con el sistema legado y escribe los tests que fallan antes de que exista el código. |
 | **Desarrollador** | Implementa cada historia hasta que los tests de QA pasan, sin tocarlos. |
@@ -51,6 +54,7 @@ flowchart LR
 - **Cualquier tecnología.** No hay nada fijo: VB6, COBOL, PowerBuilder, Delphi, Oracle Forms, ASP clásico, .NET Framework, Java EE, PHP, Access… El analista de proyecto descubre el stack en lugar de suponerlo.
 - **Código, documentos o ambos.** Sin código, los agentes reconstruyen el sistema a partir de manuales, especificaciones, minutas y capturas (Word, Excel, PowerPoint, PDF, imágenes, texto) y dicen con claridad qué sigue sin saberse. Con las dos fuentes, las **cruzan** y reportan cada contradicción.
 - **Sin stack por defecto.** El arquitecto propone opciones según el negocio, los datos y tus restricciones (nube, conocimientos del equipo, tiempos, licencias), y **tú eliges**.
+- **Nube e IA, diseñadas por especialistas.** Cuando el destino es la nube, un equipo de nube (un líder y especialistas en AWS, Azure y GCP) compara los proveedores y diseña el elegido. Un arquitecto agéntico propone dónde ayudarían los agentes de IA, como una capa opcional que puedes aceptar o no.
 - **Evidencia en cada hallazgo.** Cada regla o dato cita de dónde sale (una línea de código, una sección de un documento o tu respuesta) o queda marcado como supuesto con su nivel de confianza.
 - **Tests primero, roles separados.** QA escribe los tests, el desarrollador los hace pasar, y el revisor y seguridad revisan el resultado. Ningún agente aprueba su propio trabajo.
 - **Puedes parar cuando quieras.** Al terminar la fase 3 tienes una estimación, y al terminar la 5 un diagnóstico completo (assessment, estimación, arquitectura destino y backlog). Algunos proyectos solo necesitan eso.
@@ -161,7 +165,7 @@ vivo mientras los agentes trabajan. Muestra:
 
 - **Resumen**: qué espera tu aprobación, las 8 fases con su estado, los números clave, los agentes trabajando ahora y la actividad reciente;
 - **Fases y aprobaciones**: cada aprobación con su nota y fecha, los sprints aceptados y las aprobaciones que se reabrieron;
-- **Agentes**: los 13 roles, qué está haciendo cada uno y su última acción;
+- **Agentes**: los 18 roles, qué está haciendo cada uno y su última acción;
 - **Tablero** y **Backlog y sprints**: tareas e historias en columnas, con el avance por sprint y por épica;
 - **Preguntas**: las abiertas (primero las bloqueantes) y las respuestas dadas;
 - **Estimación**: los escenarios de equipo con sus rangos P50 → P80 en semanas, horas y costo;
@@ -201,7 +205,7 @@ aprobación explícita para cada ambiente.
 .claude-plugin/marketplace.json
 plugin/
 ├── .claude-plugin/plugin.json
-├── agents/        los 12 especialistas (un archivo Markdown cada uno)
+├── agents/        los 17 especialistas (un archivo Markdown cada uno)
 ├── skills/        init, modernize (el administrador), status y dashboard
 ├── hooks/         al iniciar la sesión: le indica a Claude en qué punto está el proyecto
 ├── ui/            el tablero visual: server.mjs y public/

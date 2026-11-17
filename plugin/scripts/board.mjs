@@ -37,7 +37,7 @@ const GATE_STATUS = ['pending', 'approved', 'rejected'];
 const EVENT_TYPES = ['start', 'done', 'finding', 'warning', 'decision', 'question', 'answer', 'task', 'gate', 'phase', 'info', 'model'];
 const POLICIES = ['balanced', 'economy', 'quality'];
 const TIERS = ['haiku', 'sonnet', 'opus', 'fable'];
-const AGENTS = ['scrum-master', 'project-analyst', 'business-analyst', 'data-engineer', 'estimator', 'architect', 'ux-designer', 'qa-engineer', 'developer', 'reviewer', 'security-engineer', 'devops-engineer'];
+const AGENTS = ['scrum-master', 'project-analyst', 'business-analyst', 'data-engineer', 'estimator', 'architect', 'cloud-architect', 'aws-specialist', 'azure-specialist', 'gcp-specialist', 'agentic-architect', 'ux-designer', 'qa-engineer', 'developer', 'reviewer', 'security-engineer', 'devops-engineer'];
 
 function parse(args) {
   const pos = [];
@@ -130,7 +130,7 @@ function init() {
   const pluginRoot = path.resolve(need(opt['plugin-root'], '--plugin-root'));
   const mode = code.length && docs.length ? 'both' : code.length ? 'code' : 'docs';
 
-  for (const dir of ['', 'sources', 'sources/text', 'deliverables', 'deliverables/05-architecture', 'deliverables/05-architecture/adr', 'deliverables/07-ux', 'deliverables/10-release', 'deliverables/sprints', 'reviews']) {
+  for (const dir of ['', 'sources', 'sources/text', 'deliverables', 'deliverables/05-architecture', 'deliverables/05-architecture/adr', 'deliverables/05-architecture/cloud', 'deliverables/05-architecture/agentic', 'deliverables/07-ux', 'deliverables/10-release', 'deliverables/sprints', 'reviews']) {
     fs.mkdirSync(file(dir), { recursive: true });
   }
   const createdAt = now();

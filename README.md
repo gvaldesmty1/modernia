@@ -19,7 +19,10 @@ each release. You approve every important decision.
 | **Business Analyst** | Reconstructs capabilities, processes and business rules, and finds contradictions between documents and code. |
 | **Data Engineer** | Reconstructs the data model and the CRUD matrix, then builds and validates the data migration. |
 | **Estimator** | Before any design, estimates time, effort, team and cost as P50/P80 ranges with two independent methods. Refines the estimate once the architecture is chosen. |
-| **Architect** | Proposes 2 or 3 target options scored against explicit criteria, then documents your choice (ADR, target architecture, migration waves). |
+| **Architect** | Proposes 2 or 3 target options scored against explicit criteria, then documents your choice (ADR, target architecture, migration waves). Leads the cloud and agentic input. |
+| **Cloud Architect** | Leads the cloud team: decides which providers to evaluate, compares them on equal terms (services, cost, migration, risk) and, after your choice, designs the cloud foundation (landing zone, governance, security, FinOps). |
+| **AWS, Azure and GCP Specialists** | One per provider: service mapping, reference architecture, best-practice review, migration path and cost range; then the detailed design for the chosen cloud, and reviews of its infrastructure as code and of each release. |
+| **Agentic Architect** | Finds where AI agents add real value to the new system, proposes them as an optional layer, designs the chosen ones (models, tools, guardrails, human approval, evaluation, cost) and reviews their implementation. |
 | **UX Designer** | Turns legacy screens into modern, accessible screen specifications. |
 | **QA Engineer** | Defines the golden cases that prove equivalence with the legacy system, and writes the failing tests before the code exists. |
 | **Developer** | Implements each story until QA's tests pass, without touching them. |
@@ -50,6 +53,7 @@ flowchart LR
 - **Any technology.** Nothing is hardcoded: VB6, COBOL, PowerBuilder, Delphi, Oracle Forms, classic ASP, .NET Framework, Java EE, PHP, Access… The project analyst discovers the stack instead of assuming it.
 - **Code, documents or both.** Without code, the agents reconstruct the system from manuals, specifications, minutes and screenshots (Word, Excel, PowerPoint, PDF, images, text) and say clearly what remains unknown. With both, they **cross-check** the sources and report each contradiction.
 - **No default stack.** The architect proposes options based on the business, the data and your constraints (cloud, team skills, time, licensing), and **you choose**.
+- **Cloud and AI, designed by specialists.** When the target is the cloud, a cloud team (a lead plus AWS, Azure and GCP specialists) compares the providers and designs the chosen one. An agentic architect proposes where AI agents would help, as an optional layer you can accept or not.
 - **Evidence on every finding.** Each rule or fact cites where it comes from (a code line, a document section or your answer) or is marked as an assumption with its confidence level.
 - **Tests first, separate roles.** QA writes the tests, the developer makes them pass, and the reviewer and the security engineer check the result. No agent approves its own work.
 - **Stop whenever you want.** After phase 3 you have an estimate, and after phase 5 a complete diagnosis (the assessment, the estimate, the target architecture and the backlog). Some projects need only that.
@@ -161,7 +165,7 @@ while the agents work. It shows:
 
 - **Overview**: what is waiting for your approval, the 8 phases with their gates, key numbers, the agents working now and recent activity;
 - **Phases and approvals**: every gate with its note and date, the accepted sprints and the gates that were reopened;
-- **Agents**: the 13 roles, what each one is doing and its last action;
+- **Agents**: the 18 roles, what each one is doing and its last action;
 - **Board** and **Backlog and sprints**: tasks and stories in kanban columns, with progress per sprint and per epic;
 - **Questions**: open ones (blocking first) and the answers given;
 - **Estimate**: team scenarios with their P50 → P80 ranges in weeks, hours and cost;
@@ -200,7 +204,7 @@ explicit approval for each environment.
 .claude-plugin/marketplace.json
 plugin/
 ├── .claude-plugin/plugin.json
-├── agents/        the 12 specialists (one Markdown file each)
+├── agents/        the 17 specialists (one Markdown file each)
 ├── skills/        init, modernize (the administrator), status and dashboard
 ├── hooks/         session start: tells Claude where a Modernia project stands
 ├── ui/            the dashboard: server.mjs and public/

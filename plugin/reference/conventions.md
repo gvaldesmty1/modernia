@@ -26,6 +26,8 @@ project's workspace, `.modernia/`, created by `/modernia:modernize`:
 | `deliverables/04-estimate.md` | estimator | Time, effort, team and cost as ranges (initial, before the architecture; then refined) |
 | `estimate.json` | estimator | The estimate's numbers in machine-readable form |
 | `deliverables/05-architecture/` | architect | `options.md`, `target.md`, `adr/ADR-n-*.md` |
+| `deliverables/05-architecture/cloud/` | cloud-architect, aws/azure/gcp-specialist | `plan.md`, `<provider>.md`, `comparison.md`, `<provider>-design.md`, `target-cloud.md` |
+| `deliverables/05-architecture/agentic/` | agentic-architect | `opportunities.md`, `design.md` |
 | `deliverables/06-backlog.md` | scrum-master | Readable version of `backlog.json` with traceability |
 | `deliverables/assessment.md` | administrator | Executive summary of the diagnosis |
 | `deliverables/07-ux/` | ux-designer | `ux-guidelines.md` plus one screen spec per story with a UI |
@@ -121,7 +123,7 @@ modules were read completely, forms were sampled".
 | `CON-n` | contradiction between sources | `US-n` | user story |
 | `GAP-n` | gap: something unknown or undocumented | `T-n` / `Q-n` | board task / question (assigned by the script) |
 | `TC-n` | golden / equivalence test case | `SEC-n` | security finding |
-| `REV-n` | review finding (scoped to a story) | | |
+| `REV-n` | review finding (scoped to a story) | `AGT-n` | agentic component |
 
 Review and security findings carry a severity: **blocking** (the story cannot
 be closed), **major** (must be fixed or accepted by the human with a reason) or
@@ -185,4 +187,5 @@ flowcharts) so diagrams render on GitHub and in the UI.
 `size` is one of `XS` `S` `M` `L` `XL`; `points` uses Fibonacci numbers.
 `owner` is the main role (`developer`, `data-engineer` or `devops-engineer`).
 Add `"ui": true` to stories that create or change a screen, so that the
-ux-designer works on them first.
+ux-designer works on them first, and `"agentic": true` to stories that build
+an agentic component, so that the agentic-architect reviews them.
